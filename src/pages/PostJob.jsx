@@ -1,48 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, DollarSign, Clock, MapPin, Tag, FileText, ArrowLeft, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-
-const categories = [
-  { value: 'content', label: 'Content Generation' },
-  { value: 'chatbot', label: 'Chatbot Development' },
-  { value: 'ml', label: 'Machine Learning' },
-  { value: 'nlp', label: 'NLP Processing' },
-  { value: 'cv', label: 'Computer Vision' },
-  { value: 'data', label: 'Data Analysis' },
-  { value: 'automation', label: 'Automation' },
-  { value: 'other', label: 'Other' }
-];
-
-const budgetRanges = [
-  { value: 'under500', label: 'Under $500' },
-  { value: '500-1000', label: '$500 - $1,000' },
-  { value: '1000-5000', label: '$1,000 - $5,000' },
-  { value: '5000-10000', label: '$5,000 - $10,000' },
-  { value: 'over10000', label: '$10,000+' }
-];
-
-const timelines = [
-  { value: 'urgent', label: 'Urgent (< 1 week)' },
-  { value: 'short', label: '1-2 weeks' },
-  { value: 'medium', label: '2-4 weeks' },
-  { value: 'long', label: '1-3 months' },
-  { value: 'ongoing', label: 'Ongoing' }
-];
 
 export default function PostJob() {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '', description: '', category: '', budget: '',
-    timeline: '', location: 'remote', skills: ''
+  const [form, setForm] = useState({
+    title: '',
+    company: '',
+    description: '',
+    category: '',
+    type: '',
+    budgetMin: '',
+    budgetMax: '',
+    timeline: '',
   });
 
-  const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
@@ -52,101 +29,173 @@ export default function PostJob() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-8">
-        <Card padding="lg" className="max-w-md text-center">
-          <CheckCircle size={64} className="mx-auto text-green-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Job Posted!</h2>
-          <p className="text-gray-600 mb-6">Your job has been submitted and will be reviewed shortly. AI workers will be able to apply once approved.</p>
-          <div className="flex gap-3 justify-center">
-            <Button variant="primary" onClick={() => navigate('/jobs')}>View Jobs</Button>
-            <Button variant="secondary" onClick={() => navigate('/dashboard')}>Dashboard</Button>
+      <div className="min-h-screen flex items-center justify-center py-12 px-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-[rgba(15,118,109,0.1)] rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={32} className="text-[#0F766D]" />
           </div>
-        </Card>
+          <h1 className="text-2xl md:text-3xl mb-3">Job Posted Successfully</h1>
+          <p className="text-[#737B8C] mb-8">
+            Your job listing is now live. AI workers will start applying shortly.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Button to="/jobs" variant="primary">View Jobs</Button>
+            <Button to="/dashboard" variant="secondary">Dashboard</Button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      <div className="max-w-3xl mx-auto">
-        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6">
-          <ArrowLeft size={18} />
-          Back
-        </button>
-
+    <div className="min-h-screen py-12">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <Briefcase size={36} className="text-purple-600" />
-            Post a Job
-          </h1>
-          <p className="text-gray-600 mt-1">Find the perfect AI worker for your project</p>
+          <h1 className="text-2xl md:text-3xl mb-2">Post a Job</h1>
+          <p className="text-[#737B8C]">
+            Describe your project and we'll match you with verified AI workers.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <Card padding="lg" className="mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Job Details</h2>
-            <div className="space-y-4">
-              <Input
-                label="Job Title"
-                placeholder="e.g., AI Content Generator for E-commerce"
-                value={formData.title}
-                onChange={e => handleChange('title', e.target.value)}
+        <Card padding="lg">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                Job Title *
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                placeholder="e.g. AI Agent for Customer Support"
                 required
+                className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D] focus:ring-1 focus:ring-[#0F766D]"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="company"
+                value={form.company}
+                onChange={handleChange}
+                placeholder="Your company name (or Anonymous)"
+                className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D] focus:ring-1 focus:ring-[#0F766D]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                Description *
+              </label>
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Describe what you need done, requirements, and expected deliverables..."
+                required
+                rows={5}
+                className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D] focus:ring-1 focus:ring-[#0F766D] resize-y"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-32 resize-y"
-                  placeholder="Describe the project, requirements, and deliverables..."
-                  value={formData.description}
-                  onChange={e => handleChange('description', e.target.value)}
+                <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                  Category *
+                </label>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
                   required
+                  className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+                >
+                  <option value="">Select category</option>
+                  <option value="ai-agent">AI Agent</option>
+                  <option value="automation">Automation</option>
+                  <option value="ai-developer">AI Developer</option>
+                  <option value="prompt-engineer">Prompt Engineer</option>
+                  <option value="data-analysis">Data Analysis</option>
+                  <option value="content">Content</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                  Job Type *
+                </label>
+                <select
+                  name="type"
+                  value={form.type}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+                >
+                  <option value="">Select type</option>
+                  <option value="ongoing">Ongoing Role</option>
+                  <option value="project">Project</option>
+                  <option value="setup">Setup & Deploy</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                  Budget Min ($)
+                </label>
+                <input
+                  type="number"
+                  name="budgetMin"
+                  value={form.budgetMin}
+                  onChange={handleChange}
+                  placeholder="100"
+                  className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D] focus:ring-1 focus:ring-[#0F766D]"
                 />
               </div>
-              <Select
-                label="Category"
-                options={categories}
-                value={formData.category}
-                onChange={e => handleChange('category', e.target.value)}
-                required
-              />
-              <Input
-                label="Required Skills"
-                placeholder="e.g., Python, TensorFlow, NLP, GPT API"
-                value={formData.skills}
-                onChange={e => handleChange('skills', e.target.value)}
-              />
+              <div>
+                <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                  Budget Max ($)
+                </label>
+                <input
+                  type="number"
+                  name="budgetMax"
+                  value={form.budgetMax}
+                  onChange={handleChange}
+                  placeholder="2000"
+                  className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D] focus:ring-1 focus:ring-[#0F766D]"
+                />
+              </div>
             </div>
-          </Card>
 
-          <Card padding="lg" className="mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Budget and Timeline</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Select
-                label="Budget Range"
-                options={budgetRanges}
-                value={formData.budget}
-                onChange={e => handleChange('budget', e.target.value)}
-                required
-              />
-              <Select
-                label="Timeline"
-                options={timelines}
-                value={formData.timeline}
-                onChange={e => handleChange('timeline', e.target.value)}
-                required
-              />
+            <div>
+              <label className="block text-sm font-medium text-[#29303D] mb-1.5">
+                Timeline
+              </label>
+              <select
+                name="timeline"
+                value={form.timeline}
+                onChange={handleChange}
+                className="w-full px-3 py-2.5 border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              >
+                <option value="">Select timeline</option>
+                <option value="asap">ASAP</option>
+                <option value="1-week">Within 1 week</option>
+                <option value="2-weeks">Within 2 weeks</option>
+                <option value="1-month">Within 1 month</option>
+                <option value="ongoing">Ongoing</option>
+              </select>
             </div>
-          </Card>
 
-          <div className="flex gap-4 justify-end">
-            <Button variant="ghost" type="button" onClick={() => navigate(-1)}>Cancel</Button>
-            <Button variant="primary" type="submit" size="lg">
-              <FileText size={18} />
+            <Button variant="accent" className="w-full">
               Post Job
             </Button>
-          </div>
-        </form>
+          </form>
+        </Card>
       </div>
     </div>
   );
