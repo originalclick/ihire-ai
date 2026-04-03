@@ -1,341 +1,537 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shield, Trash2, Flag, ArrowLeft } from 'lucide-react';
+import { Users, Briefcase, DollarSign, Shield, AlertTriangle, TrendingUp, Settings, BarChart3, Activity } from 'lucide-react';
 import Button from 'A/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 
-// Placeholder data
-const PLACEHOLDER_JOBS = [
+const mockPlatformStats = [
   {
     id: 1,
-    title: 'Build AI Chatbot',
-    poster: 'Acme Corp',
-    status: 'Active',
-    created: '2 days ago',
-    flags: 0,
+    label: 'Total Users',
+    value: '2,450',
+    icon: Users,
+    trend: '+145'
   },
   {
     id: 2,
-    title: 'Suspicious Job Post',
-    poster: 'Unknown User',
-    status: 'Flagged',
-    created: '1 day ago',
-    flags: 3,
+    label: 'Active Jobs',
+    value: '342',
+    icon: Briefcase,
+    trend: '+28'
   },
+  {
+    id: 3,
+    label: 'Revenue',
+    value: '$45,200',
+    icon: DollarSign,
+    trend: '+18.5%'
+  },
+  {
+    id: 4,
+    label: 'Disputes',
+    value: '12',
+    icon: AlertTriangle,
+    trend: '-3'
+  }
 ];
 
-const PLACEHOLDER_WORKERS = [
+const mockRecentActivity = [
   {
     id: 1,
-    name: 'Alex Chen',
-    email: 'alex@example.com',
-    rating: 4.9,
-    status: 'Active',
-    joinDate: '3 months ago',
+    action: 'New user registration',
+    user: 'john.doe@example.com',
+    timestamp: '2026-04-03 14:32',
+    type: 'user'
   },
   {
     id: 2,
-    name: 'Spam Account',
-    email: 'spam@example.com',
-    rating: 1.2,
-    status: 'Flagged',
-    joinDate: '1 week ago',
+    action: 'Job posted',
+    user: 'acme.corp@example.com',
+    timestamp: '2026-04-03 13:15',
+    type: 'job'
   },
+  {
+    id: 3,
+    action: 'Payment processed',
+    user: 'sarah.smith@example.com',
+    timestamp: '2026-04-03 12:45',
+    type: 'payment'
+  },
+  {
+    id: 4,
+    action: 'Dispute filed',
+    user: 'mike.wilson@example.com',
+    timestamp: '2026-04-03 11:20',
+    type: 'dispute'
+  }
 ];
 
-const PLACEHOLDER_REVIEWS = [
+const mockUsers = [
   {
     id: 1,
-    reviewer: 'User123',
-    target: 'Alex Chen',
-    rating: 5,
-    text: 'Excellent work!',
-    status: 'Approved',
+    name: 'John Smith',
+    email: 'john.smith@example.com',
+    role: 'Worker',
+    status: 'active',
+    joined: '2026-01-15'
   },
   {
     id: 2,
-    reviewer: 'Hater User',
-    target: 'Sam Rodriguez',
-    rating: 1,
-    text: 'Offensive content...',
-    status: 'Pending',
+    name: 'Jane Doe',
+    email: 'jane.doe@example.com',
+    role: 'Employer',
+    status: 'active',
+    joined: '2026-02-20'
   },
+  {
+    id: 3,
+    name: 'Bob Johnson',
+    email: 'bob.johnson@example.com',
+    role: 'Worker',
+    status: 'inactive',
+    joined: '2025-11-10'
+  },
+  {
+    id: 4,
+    name: 'Alice Chen',
+    email: 'alice.chen@example.com',
+    role: 'Creator',
+    status: 'active',
+    joined: '2026-03-05'
+  },
+  {
+    id: 5,
+    name: 'David Lee',
+    email: 'david.lee@example.com',
+    role: 'Employer',
+    status: 'active',
+    joined: '2026-02-01'
+  }
 ];
 
-const PLACEHOLDER_PAYMENTS = [
+const mockJobs = [
   {
     id: 1,
-    amount: 5000,
-    from: 'Job Poster',
-    to: 'Alex Chen',
-    date: '2 days ago',
-    status: 'Completed',
+    title: 'Senior ML Engineer needed',
+    company: 'TechCorp Inc',
+    status: 'active',
+    applications: 24,
+    posted: '2026-03-28'
   },
   {
     id: 2,
-    amount: 100,
-    from: 'Suspicious User',
-    to: 'Worker',
-    date: '1 day ago',
-    status: 'Pending Review',
+    title: 'Content creator for AI tutorials',
+    company: 'EduTech Ltd',
+    status: 'active',
+    applications: 15,
+    posted: '2026-03-25'
   },
+  {
+    id: 3,
+    title: 'Full Stack Developer',
+    company: 'StartupXYZ',
+    status: 'closed',
+    applications: 42,
+    posted: '2026-03-15'
+  },
+  {
+    id: 4,
+    title: 'Data Science Consultant',
+    company: 'DataSystems Co',
+    status: 'active',
+    applications: 18,
+    posted: '2026-03-20'
+  },
+  {
+    id: 5,
+    title: 'UI/UX Designer',
+    company: 'DesignStudio Pro',
+    status: 'draft',
+    applications: 0,
+    posted: '2026-04-01'
+  }
+];
+
+const mockPayments = [
+  {
+    id: 'PAY-001',
+    user: 'john.smith@example.com',
+    amount: '$850',
+    type: 'withdrawal',
+    date: '2026-04-02',
+    status: 'completed'
+  },
+  {
+    id: 'PAY-002',
+    user: 'jane.doe@example.com',
+    amount: '$1,250',
+    type: 'payment',
+    date: '2026-04-02',
+    status: 'completed'
+  },
+  {
+    id: 'PAY-003',
+    user: 'alice.chen@example.com',
+    amount: '$520',
+    type: 'withdrawal',
+    date: '2026-04-01',
+    status: 'pending'
+  },
+  {
+    id: 'PAY-004',
+    user: 'david.lee@example.com',
+    amount: '$2,100',
+    type: 'payment',
+    date: '2026-04-01',
+    status: 'completed'
+  },
+  {
+    id: 'PAY-005',
+    user: 'bob.johnson@example.com',
+    amount: '$450',
+    type: 'refund',
+    date: '2026-03-31',
+    status: 'processing'
+  }
 ];
 
 export default function AdminConsole() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('jobs');
+  const [activeTab, setActiveTab] = useState('overview');
 
   const tabs = [
-    { id: 'jobs', label: 'Jobs', count: 2 },
-    { id: 'workers', label: 'Workers', count: 2 },
-    { id: 'reviews', label: 'Reviews', count: 2 },
-    { id: 'payments', label: 'Payments', count: 2 },
+    { id: 'overview', label: 'Overview' },
+    { id: 'users', label: 'Users' },
+    { id: 'jobs', label: 'Jobs' },
+    { id: 'payments', label: 'Payments' }
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-red-50 border-b border-red-200">
-        <div className="container mx-auto px-4 py-6">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-red-600 hover:text-red-700 mb-4"
-          >
-            <ArrowLeft size={18} />
-            Back to Home
-          </button>
-          <div className="flex items-center gap-3 mb-2">
-            <Shield size={32} className="text-red-600" />
-            <h1 className="text-4xl font-bold text-slate-900">Admin Console</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Admin Console
+            </h1>
+            <p className="text-gray-600">
+              Platform management and monitoring dashboard
+            </p>
           </div>
-          <p className="text-slate-600">Manage content, users, and platform integrity</p>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Card className="p-4">
-            <p className="text-slate-600 text-xs uppercase mb-1">Active Jobs</p>
-            <p className="text-3xl font-bold text-slate-900">1,234</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-slate-600 text-xs uppercase mb-1">Total Workers</p>
-            <p className="text-3xl font-bold text-slate-900">567</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-slate-600 text-xs uppercase mb-1">Pending Reviews</p>
-            <p className="text-3xl font-bold text-red-600">23</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-slate-600 text-xs uppercase mb-1">Flagged Items</p>
-            <p className="text-3xl font-bold text-red-600">5</p>
-          </Card>
+          <Button variant="secondary" size="md">
+            <Settings size={18} className="mr-2" />
+            Settings
+          </Button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6 border-b border-slate-200 pb-4">
-          {tabs.map((tab) => (
+        <div className="flex gap-2 mb-8 border-b border-gray-200">
+          {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 font-semibold transition-colors ${
+              className={`px-4 py-3 font-medium text-sm transition-colors ${
                 activeTab === tab.id
-                  ? 'text-blue-600 border-b-2 border-blue-600 -mb-4 pb-4'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'text-purple-600 border-b-2 border-purple-600'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               {tab.label}
-              {tab.count > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {tab.count}
-                </Badge>
-              )}
             </button>
           ))}
         </div>
 
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {mockPlatformStats.map(stat => {
+                const Icon = stat.icon;
+                return (
+                  <Card key={stat.id} padding="md" hover={false}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {stat.label}
+                        </p>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                          {stat.value}
+                        </h3>
+                        <p className="text-sm text-green-600 font-medium">
+                          {stat.trend}
+                        </p>
+                      </div>
+                      <div className="bg-purple-100 p-3 rounded-lg">
+                        <Icon size={24} className="text-purple-600" />
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Recent Activity */}
+            <Card padding="lg" hover={false}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Activity size={24} />
+                Recent Activity
+              </h2>
+              <div className="space-y-4">
+                {mockRecentActivity.map(activity => (
+                  <div
+                    key={activity.id}
+                    className="flex items-start justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {activity.action}
+                      </p>
+                      <p className="text-sm text-gray-600">{activity.user}</p>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant={
+                          activity.type === 'user'
+                            ? 'info'
+                            : activity.type === 'job'
+                              ? 'success'
+                              : activity.type === 'payment'
+                                ? 'success'
+                                : 'error'
+                        }
+                        size="sm"
+                      >
+                        {activity.type}
+                      </Badge>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {activity.timestamp}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Users Tab */}
+        {activeTab === 'users' && (
+          <Card padding="lg" hover={false}>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              User Management
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Name
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Email
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Role
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Joined
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockUsers.map(user => (
+                    <tr
+                      key={user.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td className="py-3 px-4 text-gray-900 font-medium">
+                        {user.name}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {user.email}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {user.role}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Badge
+                          variant={user.status === 'active' ? 'success' : 'warning'}
+                          size="sm"
+                        >
+                          {user.status}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {user.joined}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button variant="ghost" size="sm">
+                          Review
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
         {/* Jobs Tab */}
         {activeTab === 'jobs' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-100">
-                <tr className="border-b border-slate-200">
-                  <th className="text-left p-4 font-bold text-slate-900">Title</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Poster</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Status</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Created</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Flags</th>
-                  <th className="text-center p-4 font-bold text-slate-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PLACEHOLDER_JOBS.map((job) => (
-                  <tr key={job.id} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="p-4">{job.title}</td>
-                    <td className="p-4">{job.poster}</td>
-                    <td className="p-4">
-                      <Badge
-                        variant={job.status === 'Active' ? 'default' : 'secondary'}
-                      >
-                        {job.status}
-                      </Badge>
-                    </td>
-                    <td className="p-4">{job.created}</td>
-                    <td className="p-4">
-                      <Badge variant="outline">{job.flags}</Badge>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-2 justify-center">
-                        <button className="p-2 hover:bg-slate-100 rounded">
-                          <Flag size={16} className="text-yellow-600" />
-                        </button>
-                        <button className="p-2 hover:bg-red-100 rounded">
-                          <Trash2 size={16} className="text-red-600" />
-                        </button>
-                      </div>
-                    </td>
+          <Card padding="lg" hover={false}>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Job Listings
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Title
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Company
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Applications
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Posted
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Workers Tab */}
-        {activeTab === 'workers' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-100">
-                <tr className="border-b border-slate-200">
-                  <th className="text-left p-4 font-bold text-slate-900">Name</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Email</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Rating</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Status</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Joined</th>
-                  <th className="text-center p-4 font-bold text-slate-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PLACEHOLDER_WORKERS.map((worker) => (
-                  <tr key={worker.id} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="p-4 font-semibold text-slate-900">{worker.name}</td>
-                    <td className="p-4">{worker.email}</td>
-                    <td className="p-4">
-                      <span className="font-semibold">★ {worker.rating}</span>
-                    </td>
-                    <td className="p-4">
-                      <Badge
-                        variant={worker.status === 'Active' ? 'default' : 'secondary'}
-                      >
-                        {worker.status}
-                      </Badge>
-                    </td>
-                    <td className="p-4">{worker.joinDate}</td>
-                    <td className="p-4">
-                      <div className="flex gap-2 justify-center">
-                        <button className="p-2 hover:bg-slate-100 rounded">
-                          <Flag size={16} className="text-yellow-600" />
-                        </button>
-                        <button className="p-2 hover:bg-red-100 rounded">
-                          <Trash2 size={16} className="text-red-600" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Reviews Tab */}
-        {activeTab === 'reviews' && (
-          <div className="space-y-4">
-            {PLACEHOLDER_REVIEWS.map((review) => (
-              <Card key={review.id} className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="font-bold text-slate-900">
-                      {review.reviewer} → {review.target}
-                    </h3>
-                    <p className="text-sm text-slate-600">
-                      ★ {review.rating} - {review.text}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={review.status === 'Approved' ? 'default' : 'secondary'}
-                  >
-                    {review.status}
-                  </Badge>
-                </div>
-
-                <div className="flex gap-2">
-                  {review.status === 'Pending' && (
-                    <>
-                      <Button size="sm">Approve</Button>
-                      <Button size="sm" variant="outline">
-                        Reject
-                      </Button>
-                    </>
-                  )}
-                  <Button size="sm" variant="outline" className="ml-auto gap-1">
-                    <Trash2 size={14} />
-                    Delete
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </thead>
+                <tbody>
+                  {mockJobs.map(job => (
+                    <tr
+                      key={job.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td className="py-3 px-4 text-gray-900 font-medium">
+                        {job.title}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {job.company}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Badge
+                          variant={
+                            job.status === 'active'
+                              ? 'success'
+                              : job.status === 'draft'
+                                ? 'warning'
+                                : 'default'
+                          }
+                          size="sm"
+                        >
+                          {job.status}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {job.applications}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {job.posted}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button variant="ghost" size="sm">
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         )}
 
         {/* Payments Tab */}
         {activeTab === 'payments' && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-100">
-                <tr className="border-b border-slate-200">
-                  <th className="text-left p-4 font-bold text-slate-900">Aount</th>
-                  <th className="text-left p-4 font-bold text-slate-900">From</th>
-                  <th className="text-left p-4 font-bold text-slate-900">To</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Date</th>
-                  <th className="text-left p-4 font-bold text-slate-900">Status</th>
-                  <th className="text-center p-4 font-bold text-slate-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PLACEHOLDER_PAYMENTS.map((payment) => (
-                  <tr key={payment.id} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-900">
-                      ${payment.amount.toLocaleString()}
-                    </td>
-                    <td className="p-4">{payment.from}</td>
-                    <td className="p-4">{payment.to}</td>
-                    <td className="p-4">{{payment.date}}</td>
-                    <td className="p-4">
-                      <Badge
-                        variant={
-                          payment.status === 'Completed' ? 'default' : 'secondary'
-                        }
-                      >
-                        {payment.status}
-                      </Badge>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-2 justify-center">
-                        <Button size="sm" variant="outline">
-                          Review
-                        </Button>
-                      </div>
-                    </td>
+          <Card padding="lg" hover={false}>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Payment Transactions
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Payment ID
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      User
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Amount
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Type
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Date
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                      Status
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {mockPayments.map(payment => (
+                    <tr
+                      key={payment.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td className="py-3 px-4 text-gray-900 font-medium">
+                        {payment.id}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {payment.user}
+                      </td>
+                      <td className="py-3 px-4 text-gray-900 font-medium">
+                        {payment.amount}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {payment.type}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {payment.date}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Badge
+                          variant={
+                            payment.status === 'completed'
+                              ? 'success'
+                              : payment.status === 'pending'
+                                ? 'warning'
+                                : 'info'
+                          }
+                          size="sm"
+                        >
+                          {payment.status}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         )}
       </div>
-    </div>
-  );
-}
+  
+  </div>
+  
