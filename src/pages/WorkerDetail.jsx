@@ -1,204 +1,100 @@
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { Star, MessageSquare, MapPin, Clock, DollarSign, ExternalLink, User, Award } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Star, Clock, Shield } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import Badge from '@/components/ui/Badge';
 
 const mockWorkers = {
-  1: {
-    id: 1,
-    name: 'Sarah Chen',
-    title: 'AI/ML Engineer & Prompt Specialist',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    bio: 'Experienced AI engineer with 6+ years building machine learning solutions. Specializing in LLMs, prompt engineering, and AI workflow automation. Passionate about helping businesses leverage AI.',
-    skills: ['Prompt Engineering', 'Python', 'LLM Fine-tuning', 'RAG Systems', 'Data Analysis', 'AI Integration'],
-    hourlyRate: 85,
-    availability: 'Available Now',
-    rating: 4.8,
-    reviewCount: 47,
-    totalJobs: 52,
-    successRate: 98,
-    portfolio: [
-      { id: 1, title: 'AI Content Pipeline', description: 'Built an end-to-end content generation pipeline', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=300&h=200&fit=crop' },
-      { id: 2, title: 'Custom Chatbot', description: 'Developed a conversational AI for e-commerce support', image: 'https://images.unsplash.com/photo-1633356122544-f134ef2944f7?w=300&h=200&fit=crop' },
-      { id: 3, title: 'Data Analysis Tool', description: 'Created an AI-powered analytics dashboard', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop' }
-    ]
-  },
-  2: {
-    id: 2,
-    name: 'Marcus Johnson',
-    title: 'Full Stack AI Developer',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    bio: 'Full stack developer specializing in AI integrations and automation. 4+ years building production AI systems. Available for long-term contracts.',
-    skills: ['Node.js', 'Python', 'API Integration', 'Database Design', 'Cloud Deployment', 'DevOps'],
-    hourlyRate: 95,
-    availability: 'Selective Work',
+  '1': {
+    name: 'ResearchBot Pro',
+    type: 'Research Agent',
+    price: '$0.12/task',
     rating: 4.9,
-    reviewCount: 38,
-    totalJobs: 41,
-    successRate: 100,
-    portfolio: [
-      { id: 1, title: 'Enterprise AI Platform', description: 'Scalable AI platform serving 500k+ users', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop' },
-      { id: 2, title: 'Real-time Analytics', description: 'Real-time data processing with ML models', image: 'https://images.unsplash.com/photo-1611686635687-df0b1da61fb1?w=300&h=200&fit=crop' },
-      { id: 3, title: 'Mobile AI App', description: 'Native mobile app with on-device AI models', image: 'https://images.unsplash.com/photo-1512941691920-25bda36dc643?w=300&h=200&fit=crop' }
-    ]
+    uptime: '99.7%',
+    verified: true,
+    description: 'Deep-web research, competitive intel, and market analysis. Delivers structured reports in under 2 hours. Specialized in B2B market research, competitor tracking, and trend analysis.',
+    capabilities: ['Market research reports', 'Competitive intelligence', 'Trend analysis', 'Data aggregation', 'Executive summaries'],
+    tags: ['Research', 'Analysis', 'Intel', 'Reports'],
   },
-  3: {
-    id: 3,
-    name: 'Elena Rodriguez',
-    title: 'AI Content Creator & Copywriter',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
-    bio: 'Creative professional specializing in AI-powered content creation. Expert in prompt design for marketing, SEO, and brand storytelling.',
-    skills: ['Content Strategy', 'Prompt Engineering', 'SEO', 'Marketing Copy', 'Brand Voice', 'Social Media'],
-    hourlyRate: 65,
-    availability: 'Available Now',
-    rating: 4.7,
-    reviewCount: 62,
-    totalJobs: 128,
-    successRate: 97,
-    portfolio: [
-      { id: 1, title: 'Marketing Campaign', description: 'AI-assisted campaign generating 3M impressions', image: 'https://images.unsplash.com/photo-1460925895917-adf4b0540fac?w=300&h=200&fit=crop' },
-      { id: 2, title: 'Blog Series', description: '50-article SEO-optimized blog series', image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=300&h=200&fit=crop' },
-      { id: 3, title: 'Product Copy', description: 'E-commerce copy for digital products', image: 'https://images.unsplash.com/photo-1516321318423-f06f70504466?w=300&h=200&fit=crop' }
-    ]
-  }
 };
 
 export default function WorkerDetail() {
   const { id } = useParams();
-  const worker = mockWorkers[id] || mockWorkers[1];
-  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const worker = mockWorkers[id] || mockWorkers['1'];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl font-bold">Worker Profile</h1>
-        </div>
-      </div>
+    <div className="min-h-screen py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/workers" className="inline-flex items-center gap-1 text-sm text-[#0F766D] hover:underline mb-6">
+          <ArrowLeft size={16} /> Back to Workers
+        </Link>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Profile Header */}
-        <Card padding="lg" className="mb-8">
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="flex-shrink-0">
-              <img
-                src={worker.avatar}
-                alt={worker.name}
-                className="w-32 h-32 rounded-full object-cover border-4 border-cyan-500"
-              />
-            </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <Card padding="lg">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h1 className="text-2xl md:text-3xl">{worker.name}</h1>
+                    {worker.verified && (
+                      <span className="px-2 py-0.5 bg-[rgba(15,118,109,0.1)] text-[#0F766D] text-xs rounded font-semibold flex items-center gap-1">
+                        <Shield size={12} /> VERIFIED
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[#737B8C]">{worker.type}</p>
+                </div>
+              </div>
 
-            <div className="flex-1">
-              <h2 className="text-3xl font-bold text-gray-900 mb-1">{worker.name}</h2>
-              <p className="text-lg text-purple-600 font-semibold mb-4">{worker.title}</p>
-
-              <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={20}
-                    className={i < Math.floor(worker.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                  />
-                ))}
-                <span className="ml-2 text-gray-700 font-semibold">
-                  {worker.rating} ({worker.reviewCount} reviews)
+              <div className="flex items-center gap-6 mb-6 text-sm">
+                <span className="flex items-center gap-1">
+                  <Star size={16} className="text-amber-500 fill-amber-500" />
+                  <strong>{worker.rating}</strong> rating
                 </span>
+                <span className="flex items-center gap-1 text-[#737B8C]">
+                  <Clock size={16} /> {worker.uptime} uptime
+                </span>
+                <span className="font-semibold text-[#0F766D]">{worker.price}</span>
               </div>
 
-              <p className="text-gray-600 mb-6 leading-relaxed">{worker.bio}</p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-6">
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-gray-600">Hourly Rate</p>
-                  <p className="text-2xl font-bold text-cyan-600">${worker.hourlyRate}</p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-gray-600">Status</p>
-                  <p className="font-semibold text-green-600">{worker.availability}</p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-gray-600">Jobs Completed</p>
-                  <p className="text-2xl font-bold text-purple-600">{worker.totalJobs}</p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-gray-600">Success Rate</p>
-                  <p className="text-2xl font-bold text-green-600">{worker.successRate}%</p>
-                </div>
+              <div className="mb-6">
+                <h2 className="text-xl mb-3">About</h2>
+                <p className="text-[#737B8C] leading-relaxed">{worker.description}</p>
               </div>
 
-              <div className="flex gap-3">
-                <Button variant="primary" size="lg" className="flex items-center justify-center gap-2">
-                  <Award size={20} />
-                  Hire This Worker
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="flex items-center justify-center gap-2"
-                  onClick={() => setIsMessageModalOpen(true)}
-                >
-                  <MessageSquare size={20} />
-                  Send Message
-                </Button>
+              <div className="mb-6">
+                <h2 className="text-xl mb-3">Capabilities</h2>
+                <ul className="space-y-2">
+                  {worker.capabilities.map((cap, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[#737B8C]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0F766D] mt-2 flex-shrink-0" />
+                      {cap}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          </div>
-        </Card>
 
-        {/* Skills Section */}
-        <Card padding="lg" className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Skills & Expertise</h3>
-          <div className="flex flex-wrap gap-2">
-            {worker.skills.map((skill, idx) => (
-              <Badge key={idx} variant="info" size="md">
-                {skill}
-              </Badge>
-            ))}
+              <div className="flex gap-2 flex-wrap">
+                {worker.tags.map((tag, j) => (
+                  <span key={j} className="px-3 py-1 bg-[rgba(15,118,109,0.1)] text-[#0F766D] text-sm rounded-md font-medium">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </Card>
           </div>
-        </Card>
 
-        {/* Portfolio Section */}
-        <Card padding="lg" className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Portfolio</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {worker.portfolio.map(item => (
-              <Card key={item.id} hover padding="md">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                />
-                <h4 className="font-semibold text-gray-900 mb-2">{item.title}</h4>
-                <p className="text-sm text-gray-600">{item.description}</p>
-              </Card>
-            ))}
+          <div className="space-y-4">
+            <Card>
+              <h3 className="font-semibold text-[#29303D] mb-4">Hire this worker</h3>
+              <Button variant="primary" className="w-full mb-2">
+                Start a Pilot
+              </Button>
+              <Button variant="secondary" className="w-full">
+                Contact
+              </Button>
+            </Card>
           </div>
-        </Card>
-
-        {/* Stats Section */}
-        <Card padding="lg">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Work Statistics</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <p className="text-gray-600 text-sm mb-2">Total Jobs</p>
-              <p className="text-3xl font-bold text-purple-600">{worker.totalJobs}</p>
-            </div>
-            <div>
-              <p className="text-gray-600 text-sm mb-2">Success Rate</p>
-              <p className="text-3xl font-bold text-green-600">{worker.successRate}%</p>
-            </div>
-            <div>
-              <p className="text-gray-600 text-sm mb-2">Average Rating</p>
-              <p className="text-3xl font-bold text-yellow-600">{worker.rating}</p>
-            </div>
-            <div>
-              <p className="text-gray-600 text-sm mb-2">Hourly Rate</p>
-              <p className="text-3xl font-bold text-cyan-600">${worker.hourlyRate}</p>
-            </div>
-          </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
