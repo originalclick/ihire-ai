@@ -1,264 +1,193 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, Filter, ShoppingCart } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Search, Star, ChevronDown, ShoppingCart } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-import Badge from '@/components/ui/Badge';
 
 const mockProducts = [
   {
-    id: 1,
-    name: 'AI Email Automator Pro',
-    creator: 'Tech Innovations Lab',
-    price: 49.99,
-    originalPrice: 79.99,
-    rating: 4.8,
-    reviews: 234,
+    id: '1',
+    name: 'Email Automator Pro',
     category: 'Automation',
-    description: 'Automate your email workflow with AI-powered responses and scheduling',
-    image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop'
+    price: '$49',
+    rating: 4.8,
+    reviews: 124,
+    description: 'Complete email automation toolkit with templates, scheduling, and analytics.',
+    tags: ['Email', 'Automation'],
   },
   {
-    id: 2,
+    id: '2',
     name: 'Content Spinner Template',
-    creator: 'Creative AI Studios',
-    price: 29.99,
-    originalPrice: null,
+    category: 'Templates',
+    price: '$29',
+    rating: 4.5,
+    reviews: 89,
+    description: 'AI-powered content repurposing template that turns one piece into 10+ formats.',
+    tags: ['Content', 'Templates'],
+  },
+  {
+    id: '3',
+    name: 'AI Workflow Builder',
+    category: 'Tools',
+    price: '$99',
+    rating: 4.9,
+    reviews: 203,
+    description: 'Visual workflow builder for connecting AI services with your existing tools.',
+    tags: ['Workflow', 'Integration'],
+  },
+  {
+    id: '4',
+    name: 'SEO Optimizer Suite',
+    category: 'Marketing',
+    price: '$79',
     rating: 4.6,
     reviews: 156,
-    category: 'Templates',
-    description: 'Multi-platform content template with AI enhancement hooks',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500&h=300&fit=crop'
+    description: 'AI-driven SEO analysis and optimization suite with keyword research and content scoring.',
+    tags: ['SEO', 'Marketing'],
   },
   {
-    id: 3,
-    name: 'AI Workflow Builder',
-    creator: 'Automation Masters',
-    price: 99.99,
-    originalPrice: 149.99,
-    rating: 4.9,
-    reviews: 487,
-    category: 'Workflows',
-    description: 'Complete workflow automation platform with AI integration',
-    image: 'https://images.unsplash.com/photo-1551434678-e076afc38bcc?w=500&h=300&fit=crop'
-  },
-  {
-    id: 4,
-    name: 'SEO Optimizer Suite',
-    creator: 'Digital Growth Co',
-    price: 39.99,
-    originalPrice: null,
-    rating: 4.5,
-    reviews: 312,
-    category: 'Marketing',
-    description: 'AI-powered SEO analysis and optimization tools',
-    image: 'https://images.unsplash.com/photo-1460925895917-adf4b0540fac?w=500&h=300&fit=crop'
-  },
-  {
-    id: 5,
+    id: '5',
     name: 'Customer Support AI',
-    creator: 'Support Systems Inc',
-    price: 79.99,
-    originalPrice: 119.99,
+    category: 'Support',
+    price: '$149',
     rating: 4.7,
-    reviews: 198,
-    category: 'Customer Service',
-    description: 'Intelligent customer support automation and ticket routing',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop'
+    reviews: 67,
+    description: 'Drop-in AI support agent that handles L1 tickets and escalates complex issues.',
+    tags: ['Support', 'Chatbot'],
   },
   {
-    id: 6,
+    id: '6',
     name: 'Data Analysis Dashboard',
-    creator: 'Analytics Experts',
-    price: 59.99,
-    originalPrice: 99.99,
-    rating: 4.8,
-    reviews: 421,
     category: 'Analytics',
-    description: 'Real-time analytics dashboard powered by AI insights',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop'
-  }
-];
-
-const categories = [
-  { value: '', label: 'All Categories' },
-  { value: 'Automation', label: 'Automation' },
-  { value: 'Templates', label: 'Templates' },
-  { value: 'Workflows', label: 'Workflows' },
-  { value: 'Marketing', label: 'Marketing' },
-  { value: 'Customer Service', label: 'Customer Service' },
-  { value: 'Analytics', label: 'Analytics' }
-];
-
-const sortOptions = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'popular', label: 'Most Popular' },
-  { value: 'rating', label: 'Highest Rated' },
-  { value: 'price-low', label: 'Price: Low to High' },
-  { value: 'price-high', label: 'Price: High to Low' }
+    price: '$59',
+    rating: 4.4,
+    reviews: 45,
+    description: 'Pre-built analytics dashboard template with AI-powered insights and reporting.',
+    tags: ['Analytics', 'Dashboard'],
+  },
 ];
 
 export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
-  const [viewMode, setViewMode] = useState('grid');
+  const [category, setCategory] = useState('');
+  const [sort, setSort] = useState('popular');
 
-  let filteredProducts = mockProducts.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.creator.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+  const filteredProducts = mockProducts.filter((p) => {
+    const matchesSearch =
+      !searchQuery ||
+      p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !category || p.category === category;
     return matchesSearch && matchesCategory;
   });
 
-  if (sortBy === 'popular') {
-    filteredProducts.sort((a, b) => b.reviews - a.reviews);
-  } else if (sortBy === 'rating') {
-    filteredProducts.sort((a, b) => b.rating - a.rating);
-  } else if (sortBy === 'price-low') {
-    filteredProducts.sort((a, b) => a.price - b.price);
-  } else if (sortBy === 'price-high') {
-    filteredProducts.sort((a, b) => b.price - a.price);
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold mb-2">AI Tools & Templates Marketplace</h1>
-          <p className="text-purple-100">Discover premium AI solutions from expert creators</p>
+    <div className="min-h-screen">
+      {/* Header */}
+      <section className="py-12 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl md:text-4xl mb-2">Marketplace</h1>
+          <p className="text-[#737B8C]">
+            AI tools, templates, and workflows to supercharge your operations.
+          </p>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and Filters */}
-        <Card padding="lg" className="mb-8">
-          <div className="mb-6">
-            <Input
-              label="Search products"
-              placeholder="Search by name, creator, or feature..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              helperText={`Found ${filteredProducts.length} product(s)`}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Select
-              label="Category"
-              options={categories}
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            />
-            <Select
-              label="Sort By"
-              options={sortOptions}
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            />
-            <div className="flex items-end gap-2">
-              <Button
-                variant="secondary"
-                size="md"
-                className="flex-1"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('');
-                  setSortBy('newest');
-                }}
+      {/* Filters */}
+      <section className="py-4 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-2.5 text-[#737B8C]" size={16} />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-sm border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              />
+            </div>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="appearance-none bg-white border border-[#E3E5E8] rounded-md px-4 py-2 pr-8 text-sm text-[#29303D] focus:outline-none focus:border-[#0F766D]"
               >
-                <Filter size={18} />
-                Reset
-              </Button>
+                <option value="">All Categories</option>
+                <option value="Automation">Automation</option>
+                <option value="Templates">Templates</option>
+                <option value="Tools">Tools</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Support">Support</option>
+                <option value="Analytics">Analytics</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-3 text-[#737B8C] pointer-events-none" />
+            </div>
+            <div className="relative ml-auto">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="appearance-none bg-white border border-[#E3E5E8] rounded-md px-4 py-2 pr-8 text-sm text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              >
+                <option value="popular">Most Popular</option>
+                <option value="newest">Newest</option>
+                <option value="rating">Highest Rated</option>
+                <option value="price-low">Price: Low to High</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-3 text-[#737B8C] pointer-events-none" />
             </div>
           </div>
-        </Card>
+        </div>
+      </section>
 
-        {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <Card padding="lg" className="text-center py-12">
-            <ShoppingCart size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-600">No products found matching your search</p>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map(product => (
-              <Card key={product.id} hover padding="md" className="flex flex-col h-full transition-all">
-                <div className="relative mb-4 overflow-hidden rounded-lg">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                  {product.originalPrice && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                      Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+      {/* Products Grid */}
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <Link
+                key={product.id}
+                to={`/marketplace/${product.id}`}
+                className="block"
+              >
+                <Card hover className="h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#29303D]">
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-[#737B8C]">{product.category}</p>
                     </div>
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant="info" size="sm">{product.category}</Badge>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2">
-                    {product.name}
-                  </h3>
-
-                  <p className="text-sm text-gray-600 mb-3">{product.creator}</p>
-
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className={i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      {product.rating} ({product.reviews})
+                    <span className="text-lg font-bold text-[#0F766D]">
+                      {product.price}
                     </span>
                   </div>
-                </div>
-
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-2xl font-bold text-purple-600">
-                        ${product.price}
-                      </p>
-                      {product.originalPrice && (
-                        <p className="text-sm text-gray-500 line-through">
-                          ${product.originalPrice}
-                        </p>
-                      )}
-                    </div>
+                  <p className="text-sm text-[#737B8C] mb-4 flex-1">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Star size={14} className="text-amber-500 fill-amber-500" />
+                    <span className="text-sm font-medium text-[#29303D]">
+                      {product.rating}
+                    </span>
+                    <span className="text-sm text-[#737B8C]">
+                      ({product.reviews} reviews)
+                    </span>
                   </div>
-
-                  <Button
-                    variant="primary"
-                    size="md"
-                    className="w-full flex items-center justify-center gap-2"
-                  >
-                    <ShoppingCart size={18} />
-                    Add to Cart
-                  </Button>
-                </div>
-              </Card>
+                  <div className="flex gap-2 flex-wrap">
+                    {product.tags.map((tag, j) => (
+                      <span
+                        key={j}
+                        className="px-2 py-1 bg-[#F3F1ED] text-[#737B8C] text-xs rounded-md font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Card>
+              </Link>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
