@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+const STORAGE = 'https://lkpgbckgqxukeppvtcsj.supabase.co/storage/v1/object/public/assets';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -40,7 +42,7 @@ export default function Footer() {
           {/* Branding */}
           <div className="col-span-1">
             <img
-              src="/ihire-logo.png"
+              src={`${STORAGE}/ihire-logo.png`}
               alt="ihire.ai"
               className="h-8 mb-3 brightness-200"
             />
