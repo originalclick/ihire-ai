@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/ui/Button';
 
+const STORAGE = 'https://lkpgbckgqxukeppvtcsj.supabase.co/storage/v1/object/public/assets';
+
 export default function Auth() {
   const navigate = useNavigate();
   const { signIn, signUp } = useAuth();
@@ -45,7 +47,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img
-            src="/ihire-logo.png"
+            src={`${STORAGE}/ihire-logo.png`}
             alt="ihire.ai"
             className="h-10 mx-auto mb-6"
           />
