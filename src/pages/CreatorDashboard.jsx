@@ -1,63 +1,58 @@
 import { useState } from 'react';
-import { DollarSign, Package, ShoppingCart, TrendingUp, Eye, Download, Plus, BarChart3, Clock } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Link } from 'react-router-dom';
+import { DollarSign, Package, ShoppingCart, TrendingUp, Plus } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import Badge from '@/components/ui/Badge';
-
-const stats = [
-  { label: 'Total Revenue', value: '$12,450', change: '+18%', icon: DollarSign, color: 'text-green-600', bg: 'bg-green-100' },
-  { label: 'Products Listed', value: '8', change: '+2', icon: Package, color: 'text-purple-600', bg: 'bg-purple-100' },
-  { label: 'Total Sales', value: '156', change: '+23%', icon: ShoppingCart, color: 'text-cyan-600', bg: 'bg-cyan-100' },
-  { label: 'Profile Views', value: '2,340', change: '+12%', icon: Eye, color: 'text-yellow-600', bg: 'bg-yellow-100' }
-];
-
-const products = [
-  { id: 1, name: 'AI Writing Assistant Pro', price: '$49', sales: 64, status: 'Active' },
-  { id: 2, name: 'GPT Prompt Collection', price: '$29', sales: 45, status: 'Active' },
-  { id: 3, name: 'ML Model Training Kit', price: '$89', sales: 28, status: 'Active' },
-  { id: 4, name: 'Data Viz Templates', price: '$19', sales: 19, status: 'Draft' }
-];
-
-const orders = [
-  { id: 'ORD-001', product: 'AI Writing Assistant Pro', buyer: 'John Smith', amount: '$49', date: '2025-01-15', status: 'Completed' },
-  { id: 'ORD-002', product: 'GPT Prompt Collection', buyer: 'Sarah Lee', amount: '$29', date: '2025-01-14', status: 'Completed' },
-  { id: 'ORD-003', product: 'ML Model Training Kit', buyer: 'Mike Chen', amount: '$89', date: '2025-01-14', status: 'Processing' },
-  { id: 'ORD-004', product: 'AI Writing Assistant Pro', buyer: 'Emily Park', amount: '$49', date: '2025-01-13', status: 'Completed' },
-  { id: 'ORD-005', product: 'Data Viz Templates', buyer: 'Alex Kim', amount: '$19', date: '2025-01-12', status: 'Refunded' }
-];
+import Button from '@/components/ui/Button';
 
 export default function CreatorDashboard() {
-  const [selectedTab, setSelectedTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('products');
 
-  const tabs = ['overview', 'products', 'orders'];
+  const stats = [
+    { label: 'Revenue', value: '$4,280', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Products', value: '6', icon: Package, color: 'text-[#0F766D]', bg: 'bg-[rgba(15,118,109,0.1)]' },
+    { label: 'Orders', value: '48', icon: ShoppingCart, color: 'text-[#C2714F]', bg: 'bg-[rgba(194,113,79,0.1)]' },
+    { label: 'Growth', value: '+23%', icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50' },
+  ];
+
+  const products = [
+    { name: 'Email Automator Pro', sales: 24, revenue: '$1,176', status: 'Active' },
+    { name: 'SEO Optimizer Suite', sales: 12, revenue: '$948', status: 'Active' },
+    { name: 'Content Spinner Template', sales: 8, revenue: '$232', status: 'Active' },
+    { name: 'AI Workflow Builder', sales: 4, revenue: '$396', status: 'Draft' },
+  ];
+
+  const orders = [
+    { product: 'Email Automator Pro', buyer: 'john@company.com', amount: '$49', date: '2 hours ago' },
+    { product: 'SEO Optimizer Suite', buyer: 'sarah@startup.io', amount: '$79', date: '1 day ago' },
+    { product: 'Content Spinner Template', buyer: 'mike@agency.com', amount: '$29', date: '3 days ago' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8 flex items-center justify-between">
+    <div className="min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">Creator Dashboard</h1>
-            <p className="text-gray-600 mt-1">Manage your products and track sales</p>
+            <h1 className="text-2xl md:text-3xl mb-1">Creator Dashboard</h1>
+            <p className="text-[#737B8C]">Manage your products and track sales</p>
           </div>
-          <Button variant="primary" size="lg">
-            <Plus size={18} />
-            New Product
+          <Button variant="accent" size="sm">
+            <Plus size={16} className="mr-1" /> New Product
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map(stat => {
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {stats.map((stat) => {
             const Icon = stat.icon;
             return (
               <Card key={stat.label} padding="md">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">{stat.label}</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                    <p className="text-sm text-green-600 mt-1">{stat.change}</p>
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center`}>
+                    <Icon size={20} className={stat.color} />
                   </div>
-                  <div className={stat.bg + ' p-3 rounded-lg'}>
-                    <Icon size={24} className={stat.color} />
+                  <div>
+                    <p className="text-2xl font-bold text-[#29303D]">{stat.value}</p>
+                    <p className="text-xs text-[#737B8C]">{stat.label}</p>
                   </div>
                 </div>
               </Card>
@@ -65,145 +60,45 @@ export default function CreatorDashboard() {
           })}
         </div>
 
-        <div className="mb-6 flex gap-2 border-b border-gray-200">
-          {tabs.map(tab => (
+        {/* Tabs */}
+        <div className="flex gap-1 bg-[#F3F1ED] rounded-lg p-1 mb-6 max-w-md">
+          {['products', 'orders'].map((tab) => (
             <button
               key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={'px-4 py-3 font-medium border-b-2 capitalize ' +
-                (selectedTab === tab
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900')}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 px-4 py-2 text-sm font-medium rounded-md capitalize transition-colors ${
+                activeTab === tab ? 'bg-white text-[#29303D] shadow-sm' : 'text-[#737B8C] hover:text-[#29303D]'
+              }`}
             >
               {tab}
             </button>
           ))}
         </div>
 
-        {selectedTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <Card padding="lg">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Revenue Overview</h2>
-                <div className="h-48 bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart3 size={48} className="mx-auto text-purple-400 mb-2" />
-                    <p className="text-gray-500">Revenue chart coming soon</p>
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Recent Orders</h3>
-                <div className="space-y-3">
-                  {orders.slice(0, 3).map(order => (
-                    <div key={order.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50">
-                      <div>
-                        <p className="font-medium text-gray-900">{order.product}</p>
-                        <p className="text-sm text-gray-500">{order.buyer} - {order.date}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-900">{order.amount}</p>
-                        <Badge variant={order.status === 'Completed' ? 'success' : 'warning'} size="sm">{order.status}</Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-            <div>
-              <Card padding="lg">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-                <div className="space-y-3">
-                  <Button variant="primary" size="lg" className="w-full">
-                    <Plus size={18} />
-                    Add New Product
-                  </Button>
-                  <Button variant="secondary" size="lg" className="w-full">
-                    <TrendingUp size={18} />
-                    View Analytics
-                  </Button>
-                  <Button variant="ghost" size="lg" className="w-full">
-                    <Download size={18} />
-                    Export Sales Data
-                  </Button>
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="font-semibold text-gray-900 mb-3">Performance</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Conversion Rate</span>
-                      <span className="font-semibold">4.2%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Avg Order Value</span>
-                      <span className="font-semibold">$47</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Rating</span>
-                      <span className="font-semibold text-yellow-600">4.8/5.0</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {selectedTab === 'products' && (
-          <Card padding="lg">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Your Products</h2>
+        {activeTab === 'products' && (
+          <Card padding="sm">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200 text-left">
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Product</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Price</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Sales</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Status</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Actions</th>
+                  <tr className="border-b border-[#E3E5E8]">
+                    <th className="text-left text-xs font-medium text-[#737B8C] uppercase tracking-wider px-4 py-3">Product</th>
+                    <th className="text-left text-xs font-medium text-[#737B8C] uppercase tracking-wider px-4 py-3">Sales</th>
+                    <th className="text-left text-xs font-medium text-[#737B8C] uppercase tracking-wider px-4 py-3">Revenue</th>
+                    <th className="text-left text-xs font-medium text-[#737B8C] uppercase tracking-wider px-4 py-3">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map(p => (
-                    <tr key={p.id} className="border-b border-gray-100">
-                      <td className="py-3 font-medium text-gray-900">{p.name}</td>
-                      <td className="py-3 text-gray-600">{p.price}</td>
-                      <td className="py-3 text-gray-600">{p.sales}</td>
-                      <td className="py-3"><Badge variant={p.status === 'Active' ? 'success' : 'default'} size="sm">{p.status}</Badge></td>
-                      <td className="py-3"><Button variant="ghost" size="sm">Edit</Button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        )}
-
-        {selectedTab === 'orders' && (
-          <Card padding="lg">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Order History</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 text-left">
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Order ID</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Product</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Buyer</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Amount</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Date</th>
-                    <th className="pb-3 text-sm font-semibold text-gray-600">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map(o => (
-                    <tr key={o.id} className="border-b border-gray-100">
-                      <td className="py-3 font-mono text-sm text-gray-900">{o.id}</td>
-                      <td className="py-3 text-gray-900">{o.product}</td>
-                      <td className="py-3 text-gray-600">{o.buyer}</td>
-                      <td className="py-3 font-semibold text-gray-900">{o.amount}</td>
-                      <td className="py-3 text-gray-600">{o.date}</td>
-                      <td className="py-3">
-                        <Badge variant={o.status === 'Completed' ? 'success' : o.status === 'Refunded' ? 'error' : 'warning'} size="sm">
-                          {o.status}
-                        </Badge>
+                  {products.map((p, i) => (
+                    <tr key={i} className="border-b border-[#E3E5E8] last:border-0">
+                      <td className="px-4 py-3 text-sm font-medium text-[#29303D]">{p.name}</td>
+                      <td className="px-4 py-3 text-sm text-[#737B8C]">{p.sales}</td>
+                      <td className="px-4 py-3 text-sm text-[#29303D] font-medium">{p.revenue}</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          p.status === 'Active' ? 'bg-[rgba(15,118,109,0.1)] text-[#0F766D]' : 'bg-[#F3F1ED] text-[#737B8C]'
+                        }`}>
+                          {p.status}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -211,6 +106,20 @@ export default function CreatorDashboard() {
               </table>
             </div>
           </Card>
+        )}
+
+        {activeTab === 'orders' && (
+          <div className="space-y-3">
+            {orders.map((order, i) => (
+              <div key={i} className="bg-white border border-[#E3E5E8] rounded-lg p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-[#29303D]">{order.product}</p>
+                  <p className="text-xs text-[#737B8C]">{order.buyer} &middot; {order.date}</p>
+                </div>
+                <span className="text-sm font-bold text-[#0F766D]">{order.amount}</span>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
