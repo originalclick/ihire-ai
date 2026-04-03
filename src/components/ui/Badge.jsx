@@ -4,19 +4,19 @@ export default function Badge({
   className = '',
 }) {
   const variantStyles = {
-    default: 'bg-purple-100 text-purple-800',
-    primary: 'bg-purple-600 text-white',
-    secondary: 'bg-gray-100 text-gray-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    error: 'bg-red-100 text-red-800',
-    info: 'bg-blue-100 text-blue-800',
-    cyan: 'bg-cyan-100 text-cyan-800',
+    default: 'bg-[rgba(15,118,109,0.1)] text-[#0F766D]',
+    primary: 'bg-[#0F766D] text-white',
+    secondary: 'bg-[#F3F1ED] text-[#737B8C]',
+    success: 'bg-green-50 text-green-700',
+    warning: 'bg-amber-50 text-amber-700',
+    error: 'bg-red-50 text-red-700',
+    info: 'bg-blue-50 text-blue-700',
+    accent: 'bg-[rgba(194,113,79,0.1)] text-[#C2714F]',
   };
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${variantStyles[variant]} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${variantStyles[variant] || variantStyles.default} ${className}`}
     >
       {children}
     </span>
