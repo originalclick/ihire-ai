@@ -13,6 +13,7 @@ import Auth from '@/pages/Auth'
 import Dashboard from '@/pages/Dashboard'
 import CreatorDashboard from '@/pages/CreatorDashboard'
 import AdminConsole from '@/pages/AdminConsole'
+import About from '@/pages/About'
 import NotFound from '@/pages/NotFound'
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="creator-dashboard" element={<CreatorDashboard />} />
         <Route path="console" element={<AdminConsole />} />
+        <Route path="about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
