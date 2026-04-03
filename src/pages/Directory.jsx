@@ -1,285 +1,183 @@
 import { useState } from 'react';
-import { Search, ExternalLink, Star, Grid, List } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Link, useParams } from 'react-router-dom';
+import { Search, ExternalLink, ChevronDown, Grid3X3, List } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
-import Badge from '@/components/ui/Badge';
 
 const mockTools = [
-  {
-    id: 1,
-    name: 'ChatGPT',
-    description: 'Advanced conversational AI powered by GPT-4. Use it for writing, analysis, math, coding, and creative tasks.',
-    category: 'Language Models',
-    pricing: 'Freemium',
-    rating: 4.9,
-    reviews: 1250,
-    website: 'https://openai.com/chatgpt'
-  },
-  {
-    id: 2,
-    name: 'Midjourney',
-    description: 'AI image generation tool creating stunning visuals from text descriptions. Perfect for creative projects.',
-    category: 'Image Generation',
-    pricing: 'Paid',
-    rating: 4.7,
-    reviews: 856,
-    website: 'https://midjourney.com'
-  },
-  {
-    id: 3,
-    name: 'Claude',
-    description: 'Powerful AI assistant for research, analysis, coding, and creative writing with strong reasoning capabilities.',
-    category: 'Language Models',
-    pricing: 'Freemium',
-    rating: 4.8,
-    reviews: 924,
-    website: 'https://claude.ai'
-  },
-  {
-    id: 4,
-    name: 'Notion AI',
-    description: 'Integrated AI writing assistant within Notion workspace. Helps with documentation and content creation.',
-    category: 'Productivity',
-    pricing: 'Freemium',
-    rating: 4.5,
-    reviews: 532,
-    website: 'https://notion.so'
-  },
-  {
-    id: 5,
-    name: 'Jasper',
-    description: 'AI copywriting platform for marketing content, ads, emails, and social media posts with brand voice customization.',
-    category: 'Content Generation',
-    pricing: 'Paid',
-    rating: 4.6,
-    reviews: 687,
-    website: 'https://jasper.ai'
-  },
-  {
-    id: 6,
-    name: 'Runway ML',
-    description: 'Creative AI suite for video, image, and music generation. Professional-grade tools for creators.',
-    category: 'Video & Media',
-    pricing: 'Freemium',
-    rating: 4.7,
-    reviews: 445,
-    website: 'https://runway.com'
-  },
-  {
-    id: 7,
-    name: 'Stable Diffusion',
-    description: 'Open-source AI image generation model. Customizable and can be self-hosted or used via APIs.',
-    category: 'Image Generation',
-    pricing: 'Free',
-    rating: 4.4,
-    reviews: 523,
-    website: 'https://stablediffusion.ai'
-  },
-  {
-    id: 8,
-    name: 'HubSpot AI',
-    description: 'AI-powered CRM with content generation, email optimization, and sales forecasting integrated.',
-    category: 'Business Tools',
-    pricing: 'Freemium',
-    rating: 4.6,
-    reviews: 612,
-    website: 'https://hubspot.com'
-  },
-  {
-    id: 9,
-    name: 'GitHub Copilot',
-    description: 'AI code assistant helping developers write code faster with intelligent suggestions and completions.',
-    category: 'Developer Tools',
-    pricing: 'Paid',
-    rating: 4.8,
-    reviews: 934,
-    website: 'https://github.com/features/copilot'
-  }
+  { id: '1', slug: 'chatgpt', name: 'ChatGPT', category: 'Chatbot', pricing: 'Freemium', description: 'Advanced conversational AI for writing, analysis, and problem-solving.', url: 'https://chat.openai.com' },
+  { id: '2', slug: 'midjourney', name: 'Midjourney', category: 'Image', pricing: 'Paid', description: 'AI image generation tool creating stunning visuals from text prompts.', url: 'https://midjourney.com' },
+  { id: '3', slug: 'claude', name: 'Claude', category: 'Chatbot', pricing: 'Freemium', description: 'AI assistant built for safety and helpfulness in complex tasks.', url: 'https://claude.ai' },
+  { id: '4', slug: 'notion-ai', name: 'Notion AI', category: 'Productivity', pricing: 'Paid', description: 'AI-powered workspace for notes, docs, and project management.', url: 'https://notion.so' },
+  { id: '5', slug: 'jasper', name: 'Jasper', category: 'Content', pricing: 'Paid', description: 'AI marketing copilot for creating on-brand content at scale.', url: 'https://jasper.ai' },
+  { id: '6', slug: 'runway', name: 'Runway ML', category: 'Video', pricing: 'Freemium', description: 'AI-powered creative tools for video editing and generation.', url: 'https://runwayml.com' },
+  { id: '7', slug: 'stable-diffusion', name: 'Stable Diffusion', category: 'Image', pricing: 'Free', description: 'Open-source AI image generation model for text-to-image creation.', url: 'https://stability.ai' },
+  { id: '8', slug: 'hubspot-ai', name: 'HubSpot AI', category: 'Marketing', pricing: 'Freemium', description: 'AI tools integrated across CRM, marketing, and sales platforms.', url: 'https://hubspot.com' },
+  { id: '9', slug: 'github-copilot', name: 'GitHub Copilot', category: 'Development', pricing: 'Paid', description: 'AI pair programmer that suggests code completions in real-time.', url: 'https://github.com/features/copilot' },
 ];
-
-const categories = [
-  'All Categories',
-  'Language Models',
-  'Image Generation',
-  'Content Generation',
-  'Productivity',
-  'Video & Media',
-  'Business Tools',
-  'Developer Tools'
-];
-
-const pricingFilter = [
-  { value: '', label: 'All Pricing' },
-  { value: 'Free', label: 'Free' },
-  { value: 'Freemium', label: 'Freemium' },
-  { value: 'Paid', label: 'Paid' }
-];
-
-const getPricingBadgeVariant = (pricing) => {
-  if (pricing === 'Free') return 'success';
-  if (pricing === 'Freemium') return 'info';
-  return 'warning';
-};
 
 export default function Directory() {
+  const { slug } = useParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Categories');
-  const [selectedPricing, setSelectedPricing] = useState('');
+  const [category, setCategory] = useState('');
+  const [pricing, setPricing] = useState('');
   const [viewMode, setViewMode] = useState('grid');
 
-  const filteredTools = mockTools.filter(tool => {
-    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         tool.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'All Categories' || tool.category === selectedCategory;
-    const matchesPricing = !selectedPricing || tool.pricing === selectedPricing;
-
+  const filteredTools = mockTools.filter((t) => {
+    const matchesSearch =
+      !searchQuery ||
+      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !category || t.category === category;
+    const matchesPricing = !pricing || t.pricing === pricing;
     return matchesSearch && matchesCategory && matchesPricing;
   });
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold mb-2">AI Tools Directory</h1>
-          <p className="text-purple-100">Explore the best AI tools and platforms for your workflow</p>
+  // If a slug is provided, show detail view
+  if (slug) {
+    const tool = mockTools.find((t) => t.slug === slug);
+    if (!tool) return <div className="p-8 text-center text-[#737B8C]">Tool not found</div>;
+
+    return (
+      <div className="min-h-screen py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link to="/directory" className="text-sm text-[#0F766D] hover:underline mb-6 inline-block">
+            &larr; Back to Directory
+          </Link>
+          <Card padding="lg">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl mb-1">{tool.name}</h1>
+                <div className="flex gap-2">
+                  <span className="px-2 py-0.5 bg-[rgba(15,118,109,0.1)] text-[#0F766D] text-xs rounded-md font-medium">
+                    {tool.category}
+                  </span>
+                  <span className="px-2 py-0.5 bg-[#F3F1ED] text-[#737B8C] text-xs rounded-md font-medium">
+                    {tool.pricing}
+                  </span>
+                </div>
+              </div>
+              <a
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-4 py-2 bg-[#0F766D] text-white rounded-md text-sm font-medium hover:bg-[#0d6b63] transition-colors"
+              >
+                Visit <ExternalLink size={14} />
+              </a>
+            </div>
+            <p className="text-[#737B8C]">{tool.description}</p>
+          </Card>
         </div>
       </div>
+    );
+  }
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search */}
-        <Card padding="lg" className="mb-8">
-          <Input
-            label="Search tools"
-            placeholder="Search by name, category, or description..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            helperText={`Found ${filteredTools.length} tool(s)`}
-          />
-        </Card>
+  return (
+    <div className="min-h-screen">
+      {/* Header */}
+      <section className="py-12 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl md:text-4xl mb-2">AI Directory</h1>
+          <p className="text-[#737B8C]">
+            Discover and compare the best AI tools and platforms.
+          </p>
+        </div>
+      </section>
 
-        {/* Category Tabs */}
-        <div className="mb-8 overflow-x-auto">
-          <div className="flex gap-2 pb-4">
-            {categories.map(category => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
-                  selectedCategory === category
-                    ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:border-purple-300'
-                }`}
+      {/* Filters */}
+      <section className="py-4 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-2.5 text-[#737B8C]" size={16} />
+              <input
+                type="text"
+                placeholder="Search tools..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-sm border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              />
+            </div>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="appearance-none bg-white border border-[#E3E5E8] rounded-md px-4 py-2 pr-8 text-sm text-[#29303D] focus:outline-none focus:border-[#0F766D]"
               >
-                {category}
+                <option value="">All Categories</option>
+                <option value="Chatbot">Chatbot</option>
+                <option value="Image">Image</option>
+                <option value="Video">Video</option>
+                <option value="Content">Content</option>
+                <option value="Productivity">Productivity</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Development">Development</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-3 text-[#737B8C] pointer-events-none" />
+            </div>
+            <div className="relative">
+              <select
+                value={pricing}
+                onChange={(e) => setPricing(e.target.value)}
+                className="appearance-none bg-white border border-[#E3E5E8] rounded-md px-4 py-2 pr-8 text-sm text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              >
+                <option value="">All Pricing</option>
+                <option value="Free">Free</option>
+                <option value="Freemium">Freemium</option>
+                <option value="Paid">Paid</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-3 text-[#737B8C] pointer-events-none" />
+            </div>
+            <div className="ml-auto flex gap-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-md ${viewMode === 'grid' ? 'bg-[#F3F1ED] text-[#29303D]' : 'text-[#737B8C]'}`}
+              >
+                <Grid3X3 size={16} />
               </button>
-            ))}
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-md ${viewMode === 'list' ? 'bg-[#F3F1ED] text-[#29303D]' : 'text-[#737B8C]'}`}
+              >
+                <List size={16} />
+              </button>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Pricing Filter */}
-        <Card padding="md" className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter by Pricing
-              </label>
-              <select
-                value={selectedPricing}
-                onChange={(e) => setSelectedPricing(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                {pricingFilter.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-end">
-              <Button
-                variant="secondary"
-                size="md"
-                className="w-full"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('All Categories');
-                  setSelectedPricing('');
-                }}
-              >
-                Reset Filters
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        {/* Tools List/Grid */}
-        {filteredTools.length === 0 ? (
-          <Card padding="lg" className="text-center py-12">
-            <Search size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-600">No tools found matching your criteria</p>
-          </Card>
-        ) : (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'grid gap-4'}>
-            {filteredTools.map(tool => (
-              <Card
+      {/* Tools Grid/List */}
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            {filteredTools.map((tool) => (
+              <Link
                 key={tool.id}
-                hover
-                padding="lg"
-                className={`flex flex-col h-full transition-all ${viewMode === 'list' ? 'md:flex-row md:items-start' : ''}`}
+                to={`/directory/${tool.slug}`}
+                className={`block bg-white border border-[#E3E5E8] rounded-lg p-6 hover:border-[#0F766D]/30 hover:shadow-sm transition-all ${viewMode === 'list' ? 'flex items-center gap-6' : ''}`}
               >
-                <div className={viewMode === 'list' ? 'md:flex-1' : ''}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-1">
-                        {tool.name}
-                      </h3>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Badge variant="default" size="sm">{tool.category}</Badge>
-                        <Badge variant={getPricingBadgeVariant(tool.pricing)} size="sm">
-                          {tool.pricing}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-                    {tool.description}
-                  </p>
-
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className={i < Math.floor(tool.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      {tool.rating} ({tool.reviews})
+                <div className={viewMode === 'list' ? 'flex-1' : ''}>
+                  <h3 className="text-lg font-semibold text-[#29303D] mb-1">
+                    {tool.name}
+                  </h3>
+                  <div className="flex gap-2 mb-2">
+                    <span className="px-2 py-0.5 bg-[rgba(15,118,109,0.1)] text-[#0F766D] text-xs rounded-md font-medium">
+                      {tool.category}
+                    </span>
+                    <span className="px-2 py-0.5 bg-[#F3F1ED] text-[#737B8C] text-xs rounded-md font-medium">
+                      {tool.pricing}
                     </span>
                   </div>
+                  <p className="text-sm text-[#737B8C] line-clamp-2">
+                    {tool.description}
+                  </p>
                 </div>
-
-                <div className={`pt-4 border-t ${viewMode === 'list' ? 'md:border-t-0 md:border-l md:pl-6 md:pt-0 md:w-auto' : ''}`}>
-                  <Button
-                    variant="primary"
-                    size="md"
-                    className="w-full md:w-auto flex items-center justify-center gap-2"
-                    onClick={() => window.open(tool.website, '_blank')}
-                  >
-                    <ExternalLink size={18} />
-                    Visit
-                  </Button>
-                </div>
-              </Card>
+                <ExternalLink size={16} className="text-[#737B8C] flex-shrink-0 hidden sm:block" />
+              </Link>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
