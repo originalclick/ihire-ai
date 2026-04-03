@@ -1,274 +1,198 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, MapPin, DollarSign, Filter } from 'lucide-react';
-import Button from '@/components/ui/Button';
-import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-import Badge from '@/components/ui/Badge';
+import { Search, Star, ChevronDown } from 'lucide-react';
 
 const mockWorkers = [
   {
-    id: 1,
-    name: 'Sarah Chen',
-    title: 'AI/ML Engineer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    skills: ['Python', 'TensorFlow', 'NLP'],
-    hourlyRate: 85,
-    rating: 4.8,
-    reviewCount: 24,
-    availability: 'Available Now',
-    location: 'San Francisco, CA',
-    category: 'AI/ML'
-  },
-  {
-    id: 2,
-    name: 'Marcus Johnson',
-    title: 'Full Stack Developer',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    skills: ['React', 'Node.js', 'PostgreSQL'],
-    hourlyRate: 75,
-    rating: 4.6,
-    reviewCount: 18,
-    availability: 'Available Now',
-    location: 'Austin, TX',
-    category: 'Full Stack'
-  },
-  {
-    id: 3,
-    name: 'Elena Rossi',
-    title: 'Content Creator',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
-    skills: ['Video Editing', 'Copywriting', 'SEO'],
-    hourlyRate: 55,
-    rating: 4.7,
-    reviewCount: 32,
-    availability: 'Selective',
-    location: 'New York, NY',
-    category: 'Content'
-  },
-  {
-    id: 4,
-    name: 'Alex Kumar',
-    title: 'AI/ML Engineer',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
-    skills: ['PyTorch', 'Computer Vision', 'AWS'],
-    hourlyRate: 95,
+    id: '1',
+    name: 'ResearchBot Pro',
+    type: 'Research Agent',
+    price: '$0.12/task',
     rating: 4.9,
-    reviewCount: 28,
-    availability: 'Available Now',
-    location: 'Seattle, WA',
-    category: 'AI/ML'
+    uptime: '99.7%',
+    description: 'Deep-web research, competitive intel, and market analysis. Delivers structured reports in under 2 hours.',
+    tags: ['Research', 'Analysis', 'Intel'],
+    verified: true,
   },
   {
-    id: 5,
-    name: 'Jessica Lee',
-    title: 'UI/UX Designer',
-    avatar: 'https://images.unsplash.com/photo-1517849845537-1d51a20414de?w=400&h=400&fit=crop',
-    skills: ['Figma', 'Prototyping', 'Design Systems'],
-    hourlyRate: 65,
+    id: '2',
+    name: 'OutboundAI',
+    type: 'Sales Agent',
+    price: '$0.08/message',
+    rating: 4.8,
+    uptime: '99.2%',
+    description: 'Personalized cold outreach at scale. Writes, sends, and follows up across email and LinkedIn.',
+    tags: ['Sales', 'Outbound', 'Email'],
+    verified: true,
+  },
+  {
+    id: '3',
+    name: 'SupportFlow',
+    type: 'Customer Support Bot',
+    price: '$0.05/ticket',
+    rating: 4.7,
+    uptime: '99.9%',
+    description: 'Handles L1 support tickets with human-level accuracy. Escalates edge cases automatically.',
+    tags: ['Support', 'Chat', 'Tickets'],
+    verified: true,
+  },
+  {
+    id: '4',
+    name: 'ContentEngine',
+    type: 'Content Writer',
+    price: '$0.03/word',
+    rating: 4.6,
+    uptime: '98.8%',
+    description: 'SEO-optimized blog posts, landing pages, and social media content. Maintains brand voice across channels.',
+    tags: ['Content', 'SEO', 'Writing'],
+    verified: true,
+  },
+  {
+    id: '5',
+    name: 'DataCrunch',
+    type: 'Data Analyst',
+    price: '$0.15/query',
+    rating: 4.9,
+    uptime: '99.5%',
+    description: 'Automated data analysis and reporting. Connects to your databases and delivers insights on schedule.',
+    tags: ['Data', 'Analytics', 'Reports'],
+    verified: true,
+  },
+  {
+    id: '6',
+    name: 'QABot',
+    type: 'Quality Assurance',
+    price: '$0.10/test',
     rating: 4.5,
-    reviewCount: 15,
-    availability: 'Available Now',
-    location: 'Los Angeles, CA',
-    category: 'Design'
+    uptime: '99.1%',
+    description: 'Automated testing for web applications. Generates test cases, runs regressions, and reports bugs.',
+    tags: ['QA', 'Testing', 'Automation'],
+    verified: false,
   },
-  {
-    id: 6,
-    name: 'David Park',
-    title: 'Full Stack Developer',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    skills: ['Vue.js', 'Django', 'MongoDB'],
-    hourlyRate: 70,
-    rating: 4.4,
-    reviewCount: 12,
-    availability: 'Selective',
-    location: 'Boston, MA',
-    category: 'Full Stack'
-  }
 ];
 
 export default function Workers() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedAvailability, setSelectedAvailability] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [category, setCategory] = useState('');
 
-  const categoryOptions = [
-    { value: 'All', label: 'All Categories' },
-    { value: 'AI/ML', label: 'AI/ML' },
-    { value: 'Full Stack', label: 'Full Stack' },
-    { value: 'Content', label: 'Content' },
-    { value: 'Design', label: 'Design' }
-  ];
-
-  const availabilityOptions = [
-    { value: 'All', label: 'All Availability' },
-    { value: 'Available Now', label: 'Available Now' },
-    { value: 'Selective', label: 'Selective' }
-  ];
-
-  const filteredWorkers = mockWorkers.filter(worker => {
+  const filteredWorkers = mockWorkers.filter((w) => {
     const matchesSearch =
-      worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      worker.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      worker.skills.some(skill =>
-        skill.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-    const matchesCategory =
-      selectedCategory === 'All' || worker.category === selectedCategory;
-
-    const matchesAvailability =
-      selectedAvailability === 'All' ||
-      worker.availability === selectedAvailability;
-
-    return matchesSearch && matchesCategory && matchesAvailability;
+      !searchQuery ||
+      w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.type.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !category || w.type === category;
+    return matchesSearch && matchesCategory;
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Find AI Talent
-          </h1>
-          <p className="text-gray-600">
-            Browse and hire skilled AI workers for your projects
-          </p>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Input
-            label="Search Workers"
-            placeholder="Name, title, or skill..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-          <Select
-            label="Category"
-            options={categoryOptions}
-            value={selectedCategory}
-            onChange={e => setSelectedCategory(e.target.value)}
-          />
-          <Select
-            label="Availability"
-            options={availabilityOptions}
-            value={selectedAvailability}
-            onChange={e => setSelectedAvailability(e.target.value)}
-          />
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-6 flex items-center gap-2 text-gray-600">
-          <Filter size={18} />
-          <span>{filteredWorkers.length} workers found</span>
-        </div>
-
-        {/* Worker Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredWorkers.map(worker => (
-            <Card key={worker.id} padding="md" hover={true}>
-              <div className="flex flex-col h-full">
-                {/* Avatar and Info */}
-                <div className="flex items-start gap-4 mb-4">
-                  <img
-                    src={worker.avatar}
-                    alt={worker.name}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg text-gray-900">
-                      {worker.name}
-                    </h3>
-                    <p className="text-sm text-gray-600">{worker.title}</p>
-                  </div>
-                </div>
-
-                {/* Skills */}
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {worker.skills.slice(0, 2).map(skill => (
-                    <Badge key={skill} variant="info" size="sm">
-                      {skill}
-                    </Badge>
-                  ))}
-                  {worker.skills.length > 2 && (
-                    <Badge variant="default" size="sm">
-                      +{worker.skills.length - 2}
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Rating and Rate */}
-                <div className="grid grid-cols-2 gap-4 mb-4 pb-4 border-b border-gray-200">
-                  <div>
-                    <div className="flex items-center gap-1 mb-1">
-                      <Star size={16} className="text-yellow-500 fill-yellow-500" />
-                      <span className="font-bold text-gray-900">
-                        {worker.rating}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600">
-                      {worker.reviewCount} reviews
-                    </p>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1 mb-1">
-                      <DollarSign size={16} className="text-purple-600" />
-                      <span className="font-bold text-gray-900">
-                        {worker.hourlyRate}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600">per hour</p>
-                  </div>
-                </div>
-
-                {/* Location and Availability */}
-                <div className="mb-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin size={16} className="text-cyan-600" />
-                    <span>{worker.location}</span>
-                  </div>
-                  <Badge
-                    variant={
-                      worker.availability === 'Available Now' ? 'success' : 'warning'
-                    }
-                    size="sm"
-                  >
-                    {worker.availability}
-                  </Badge>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-2 mt-auto">
-                  <Link to={`/workers/${worker.id}`} className="flex-1">
-                    <Button variant="secondary" size="sm" className="w-full">
-                      View Profile
-                    </Button>
-                  </Link>
-                  <Button variant="primary" size="sm" className="flex-1">
-                    Contact
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredWorkers.length === 0 && (
-          <div className="text-center py-12">
-            <Search size={48} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              No workers found
-            </h3>
-            <p className="text-gray-600">
-              Try adjusting your search or filter criteria
-            </p>
+    <div className="min-h-screen">
+      {/* Header */}
+      <section className="py-12 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl mb-2">AI Workers</h1>
+              <p className="text-[#737B8C]">
+                Verified bots, agents, and managed operators ready to work.
+              </p>
+            </div>
+            <Link
+              to="/list-your-ai"
+              className="inline-flex items-center justify-center px-5 py-2.5 bg-[#0F766D] text-white rounded-md font-medium hover:bg-[#0d6b63] transition-colors text-sm"
+            >
+              List Your AI
+            </Link>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="py-4 border-b border-[#E3E5E8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-2.5 text-[#737B8C]" size={16} />
+              <input
+                type="text"
+                placeholder="Search workers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-sm border border-[#E3E5E8] rounded-md bg-white text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              />
+            </div>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="appearance-none bg-white border border-[#E3E5E8] rounded-md px-4 py-2 pr-8 text-sm text-[#29303D] focus:outline-none focus:border-[#0F766D]"
+              >
+                <option value="">All Categories</option>
+                <option value="Research Agent">Research</option>
+                <option value="Sales Agent">Sales</option>
+                <option value="Customer Support Bot">Support</option>
+                <option value="Content Writer">Content</option>
+                <option value="Data Analyst">Data</option>
+                <option value="Quality Assurance">QA</option>
+              </select>
+              <ChevronDown size={14} className="absolute right-2.5 top-3 text-[#737B8C] pointer-events-none" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Workers Grid */}
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredWorkers.map((worker) => (
+              <Link
+                key={worker.id}
+                to={`/workers/${worker.id}`}
+                className="block bg-white border border-[#E3E5E8] rounded-lg p-6 hover:border-[#0F766D]/30 hover:shadow-sm transition-all"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-[#29303D]">
+                        {worker.name}
+                      </h3>
+                      {worker.verified && (
+                        <span className="px-1.5 py-0.5 bg-[rgba(15,118,109,0.1)] text-[#0F766D] text-[10px] rounded font-semibold">
+                          VERIFIED
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-[#737B8C]">{worker.type}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#0F766D]">
+                    {worker.price}
+                  </span>
+                </div>
+                <p className="text-sm text-[#737B8C] mb-4 line-clamp-2">
+                  {worker.description}
+                </p>
+                <div className="flex items-center gap-4 mb-3 text-sm">
+                  <span className="flex items-center gap-1">
+                    <Star size={14} className="text-amber-500 fill-amber-500" />
+                    {worker.rating}
+                  </span>
+                  <span className="text-[#737B8C]">{worker.uptime} uptime</span>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {worker.tags.map((tag, j) => (
+                    <span
+                      key={j}
+                      className="px-2 py-1 bg-[#F3F1ED] text-[#737B8C] text-xs rounded-md font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
