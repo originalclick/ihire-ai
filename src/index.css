@@ -2,55 +2,124 @@
 
 @layer base {
   :root {
-    --primary: #6C3AED;
-    --accent: #06B6D4;
-    --bg-primary: #FFFFFF;
-    --bg-secondary: #F9FAFB;
-    --text-primary: #1F2937;
-    --text-secondary: #6B7280;
-    --border-color: #E5E7EB;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --primary: #0F766D;
+    --primary-light: rgba(15, 118, 109, 0.1);
+    --accent: #C2714F;
+    --bg-primary: #FAF9F5;
+    --bg-secondary: #F3F1ED;
+    --bg-card: #FFFFFF;
+    --text-primary: #29303D;
+    --text-secondary: #737B8C;
+    --text-muted: rgba(41, 48, 61, 0.7);
+    --border-color: #E3E5E8;
+    --footer-bg: #30302E;
+    --footer-text: #A8A8A6;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
     font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-primary: #111827;
-      --bg-secondary: #1F2937;
-      --text-primary: #F3F4F6;
-      --text-secondary: #D1D5DB;
-      --border-color: #374151;
-    }
+
+  body {
+    margin: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
   }
-  body { margin: 0; background-color: var(--bg-primary); color: var(--text-primary); }
-  #root { display: flex; flex-direction: column; min-height: 100vh; }
-  h1, h2, h3, h4, h5, h6 { color: var(--text-primary); font-weight: 600; line-height: 1.2; }
-  h1 { font-size: 2.25rem; margin-bottom: 1rem; }
-  h2 { font-size: 1.875rem; margin-bottom: 0.75rem; }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  h2 { font-size: 2rem; margin-bottom: 0.75rem; }
   h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
   p { margin: 0; }
-  a { color: var(--primary); text-decoration: none; transition: opacity 0.2s ease; }
-  a:hover { opacity: 0.8; }
-  button { font-family: 'Inter', system-ui, -apple-system, sans-serif; cursor: pointer; border: none; border-radius: 0.5rem; transition: all 0.2s ease; }
-  input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-serif; border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.5rem 0.75rem; background-color: var(--bg-primary); color: var(--text-primary); }
-  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 58, 237, 0.1); }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  a:hover { opacity: 0.85; }
+
+  button {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  input, textarea, select {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(15, 118, 109, 0.1);
+  }
 }
+
 @layer components {
-  .btn-primary { @apply bg-[var(--primary)] text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity; }
-  .btn-secondary { @apply bg-[var(--bg-secondary)] text-[var(--text-primary)] px-4 py-2 rounded-lg font-medium border border-[var(--border-color)] hover:opacity-90 transition-opacity; }
-  .btn-accent { @apply bg-[var(--accent)] text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity; }
-  .card { @apply bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg p-6 shadow-[var(--shadow)]; }
-  .input-field { @apply w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]; }
-  .container { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .btn-primary {
+    @apply bg-[var(--primary)] text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .btn-secondary {
+    @apply bg-[var(--bg-card)] text-[var(--text-primary)] px-4 py-2 rounded-md font-medium border border-[var(--border-color)] hover:opacity-90 transition-opacity;
+  }
+
+  .btn-accent {
+    @apply bg-[var(--accent)] text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .card {
+    @apply bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-6 shadow-[var(--shadow)];
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 border border-[var(--border-color)] rounded-md bg-[var(--bg-card)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)];
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .font-serif {
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  .font-sans {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  }
 }
+
 @layer utilities {
   .text-primary { @apply text-[var(--text-primary)]; }
   .text-secondary { @apply text-[var(--text-secondary)]; }
   .bg-primary { @apply bg-[var(--bg-primary)]; }
+  .bg-card { @apply bg-[var(--bg-card)]; }
   .border-color { @apply border-[var(--border-color)]; }
   .shadow-primary { @apply shadow-[var(--shadow)]; }
   .shadow-lg-primary { @apply shadow-[var(--shadow-lg)]; }
