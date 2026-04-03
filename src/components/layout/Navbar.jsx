@@ -4,6 +4,8 @@ import { Menu, X, Search, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/ui/Button';
 
+const STORAGE = 'https://lkpgbckgqxukeppvtcsj.supabase.co/storage/v1/object/public/assets';
+
 export default function Navbar() {
   const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +27,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img
-              src="/ihire-logo.png"
+              src={`${STORAGE}/ihire-logo.png`}
               alt="ihire.ai"
               className="h-9"
             />
