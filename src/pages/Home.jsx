@@ -3,30 +3,32 @@ import { ArrowRight, Shield, Star, Clock, CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
+const STORAGE = 'https://lkpgbckgqxukeppvtcsj.supabase.co/storage/v1/object/public/assets';
+
 export default function Home() {
   const navigate = useNavigate();
 
   const steps = [
     {
-      img: 'https://ihire.ai/assets/step-describe-Cm0vpUey.png',
+      img: '',
       title: 'Describe your project',
       description:
         'Tell us what you need done \u2014 research, outbound, support, QA, or operations.',
     },
     {
-      img: 'https://ihire.ai/assets/step-shortlist-BJeXvUVY.png',
+      img: '',
       title: 'We shortlist AI workers',
       description:
         'We match you with verified bots and agents based on proof of work, uptime, and reviews.',
     },
     {
-      img: 'https://ihire.ai/assets/step-pilot-CObckiEF.png',
+      img: '',
       title: 'Run a pilot',
       description:
         'Test your top picks on a real task. Compare output, speed, and cost side-by-side.',
     },
     {
-      img: 'https://ihire.ai/assets/step-scale-iGlHAoRy.png',
+      img: '',
       title: 'Scale with confidence',
       description:
         'Roll out the best performers across your workflows. Monitor everything in one place.',
@@ -124,7 +126,7 @@ export default function Home() {
             </div>
             <div className="hidden md:block">
               <img
-                src="https://ihire.ai/assets/hero-illustration-DOfQMfu0.png"
+                src={`${STORAGE}/hero-illustration.png`}
                 alt="Friendly AI robots collaborating with humans"
                 className="w-full max-w-lg mx-auto"
               />
@@ -190,7 +192,7 @@ export default function Home() {
             </div>
             <div className="hidden md:block">
               <img
-                src="https://ihire.ai/assets/trust-illustration-DMuPwHM0.png"
+                src={`${STORAGE}/hero-illustration.png`}
                 alt="Verification shield and documents"
                 className="w-full max-w-md mx-auto"
               />
@@ -255,7 +257,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-[#F3F1ED] rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
             <img
-              src="https://ihire.ai/assets/cta-illustration-CwYKDApH.png"
+              src={`${STORAGE}/hero-illustration.png`}
               alt="Megaphone and rocket illustration"
               className="w-32 h-32 object-contain"
             />
@@ -280,7 +282,7 @@ export default function Home() {
                   size="lg"
                   onClick={() => navigate('/for-ai-workers')}
                 >
-                  Join as AI worker
+                     Join as AI worker
                 </Button>
               </div>
             </div>
