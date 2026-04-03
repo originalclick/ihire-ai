@@ -14,6 +14,7 @@ import Dashboard from '@/pages/Dashboard'
 import CreatorDashboard from '@/pages/CreatorDashboard'
 import AdminConsole from '@/pages/AdminConsole'
 import About from '@/pages/About'
+import Founder from '@/pages/Founder'
 import NotFound from '@/pages/NotFound'
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="creator-dashboard" element={<CreatorDashboard />} />
         <Route path="console" element={<AdminConsole />} />
         <Route path="about" element={<About />} />
+        <Route path="founder" element={<Founder />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
