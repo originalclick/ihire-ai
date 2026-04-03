@@ -1,326 +1,344 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Briefcase, FileText, Package, Settings, LogOut, Plus } from 'lucide-react';
-import Button from 'A/components/ui/Button';
+import { Briefcase, Users, MessageSquare, TrendingUp, Clock, FileText, ArrowRight, Bell } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { useAuth } from '@/context/AuthContext';
+
+const mockActivityData = [
+  {
+    id: 1,
+    type: 'application',
+    title: 'New Application Received',
+    description: 'Sarah Chen applied for "AI Content Generator" position',
+    timestamp: '2 hours ago',
+    icon: FileText,
+    status: 'new'
+  },
+  {
+    id: 2,
+    type: 'message',
+    title: 'Message from Marcus Johnson',
+    description: 'Interested in discussing the LLM project scope',
+    timestamp: '4 hours ago',
+    icon: MessageSquare,
+    status: 'unread'
+  },
+  {
+    id: 3,
+    type: 'job',
+    title: 'Job Posted Successfully',
+    description: '"Full Stack AI Developer" is now live and receiving applications',
+    timestamp: '1 day ago',
+    icon: Briefcase,
+    status: 'completed'
+  },
+  {
+    id: 4,
+    type: 'milestone',
+    title: 'Profile Update Complete',
+    description: 'Your profile rating increased to 4.8 stars',
+    timestamp: '2 days ago',
+    icon: TrendingUp,
+    status: 'completed'
+  },
+  {
+    id: 5,
+    type: 'application',
+    title: 'Application Accepted',
+    description: 'Elena Rodriguez accepted your job offer for "AI Trainer"',
+    timestamp: '3 days ago',
+    icon: Users,
+    status: 'completed'
+  }
+];
+
+const mockStats = [
+  {
+    label: 'Active Jobs',
+    value: '12',
+    change: '+2 this month',
+    icon: Briefcase,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50'
+  },
+  {
+    label: 'Applications',
+    value: '48',
+    change: '+12 pending',
+    icon: FileText,
+    color: 'text-cyan-600',
+    bgColor: 'bg-cyan-50'
+  },
+  {
+    label: 'Messages',
+    value: '24',
+    change: '5 unread',
+    icon: MessageSquare,
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50'
+  },
+  {
+    label: 'Total Earnings',
+    value: '$8,450',
+    change: '+$1,200 this month',
+    icon: TrendingUp,
+    color: 'text-green-600',
+    bgColor: 'bg-green-50'
+  }
+];
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState('jobs');
+  const [selectedTab, setSelectedTab] = useState('overview');
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Card className="max-w-md p-8 text-center">
-          <p className="text-slate-600 mb-6">Please sign in to view your dashboard.</p>
-          <Button onClick={() => navigate('/auth')} className="w-full">
-            Sign In
-          </Button>
-        </Card>
-      </div>
-    );
-  }
+  // Mock user data - in real app this would come from useAuth()
+  const user = {
+    name: 'Alex Johnson',
+    email: 'alex@example.com',
+    role: 'Hiring Manager',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'
+  };
 
-  const tabs = [
-    { id: 'jobs', label: 'My Jobs', icon: Briefcase },
-    { id: 'applications', label: 'Applications', icon: FileText },
-    { id: 'products', label: 'My Products', icon: Package },
-    { id: 'settings', label: 'Settings', icon: Settings },
-  ];
-
-  const placeholderJobs = [
-    {
-      id: 1,
-      title: 'Build AI Chatbot',
-      status: 'In Progress',
-      budget: '$5,000 - $8,000',
-      postedDate: '2 days ago',
-      applications: 12,
-    },
-    {
-      id: 2,
-      title: 'Data Analysis Automation',
-      status: 'Open',
-      budget: '$2,000 - $4,000',
-      postedDate: '5 days ago',
-      applications: 5,
-    },
-  ];
-
-  const placeholderApplications = [
-    {
-      id: 1,
-      jobTitle: 'Build AI Chatbot',
-      applicant: 'Alex Chen',
-      proposedRate: '$75/hour',
-      status: 'Pending',
-      date: '2 days ago',
-    },
-    {
-      id: 2,
-      jobTitle: 'Data Analysis',
-      applicant: 'Jordan Lee',
-      proposedRate: '$65/hour',
-      status: 'Accepted',
-      date: '3 days ago',
-    },
-  ];
+  const getActivityStatusVariant = (status) => {
+    if (status === 'new') return 'error';
+    if (status === 'unread') return 'warning';
+    return 'success';
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 py-6">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900">Dashboard</h1>
-              <p className="text-slate-600 mt-1">Welcome back, {user.email}</p>
+              <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name}!</h1>
+              <p className="text-gray-600 text-sm mt-1">Here's what's happening with your account today</p>
             </div>
-            <Button onClick={() => signOut()} variant="outline" className="gap-2">
-              <LogOut size={18} />
-              Sign Out
-            </Button>
+            <div className="flex items-center gap-4">
+              <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                <Bell size={24} />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+              <div className="flex items-center gap-3">
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Tab Navigation */}
-        <div className="flex gap-4 mb-8 overflow-x-auto pb-4 border-b border-slate-200">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {mockStats.map((stat, idx) => {
+            const Icon = stat.icon;
             return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? 'text-blue-600 border-b-2 border-blue-600 -mb-4 pb-4'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Icon size={18} />
-                {tab.label}
-              </button>
+              <Card key={idx} padding="lg" hover className="transition-all">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-gray-600 text-sm font-medium mb-2">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</p>
+                    <p className="text-xs text-gray-500">{stat.change}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-lg`}>
+                    <Icon size={24} className={stat.color} />
+                  </div>
+                </div>
+              </Card>
             );
           })}
         </div>
 
-        {/* Tab Content */}
-        {activeTab === 'jobs' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">My Jobs</h2>
-              <Button onClick={() => navigate('/post-job')} className="gap-2">
-                <Plus size={18} />
-                Post New Job
-              </Button>
+        {/* Tabs */}
+        <div className="mb-6">
+          <div className="flex gap-2 border-b border-gray-200">
+            <button
+              onClick={() => setSelectedTab('overview')}
+              className={`px-4 py-3 font-medium transition-colors border-b-2 ${
+                selectedTab === 'overview'
+                  ? 'border-purple-600 text-purple-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Recent Activity
+            </button>
+            <button
+              onClick={() => setSelectedTab('jobs')}
+              className={`px-4 py-3 font-medium transition-colors border-b-2 ${
+                selectedTab === 'jobs'
+                  ? 'border-purple-600 text-purple-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Active Jobs
+            </button>
+            <button
+              onClick={() => setSelectedTab('workers')}
+              className={`px-4 py-3 font-medium transition-colors border-b-2 ${
+                selectedTab === 'workers'
+                  ? 'border-purple-600 text-purple-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Saved Workers
+            </button>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        {selectedTab === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card padding="lg">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+                <div className="space-y-4">
+                  {mockActivityData.map((activity) => {
+                    const Icon = activity.icon;
+                    return (
+                      <div
+                        key={activity.id}
+                        className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100"
+                      >
+                        <div className="flex-shrink-0 mt-1">
+                          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100">
+                            <Icon size={20} className="text-purple-600" />
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-gray-900">{activity.title}</h3>
+                            <Badge variant={getActivityStatusVariant(activity.status)} size="sm">
+                              {activity.status}
+                            </Badge>
+                          </div>
+                          <p className="text-gray-600 text-sm mb-1">{activity.description}</p>
+                          <p className="text-xs text-gray-500 flex items-center gap-1">
+                            <Clock size={12} />
+                            {activity.timestamp}
+                          </p>
+                        </div>
+
+                        <button className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors">
+                          <ArrowRight size={18} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
             </div>
 
-            {placeholderJobs.length > 0 ? (
-              <div className="space-y-4">
-                {placeholderJobs.map((job) => (
-                  <Card
-                    key={job.id}
-                    className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => navigate(`/jobs/${job.id}`)}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-slate-900">{job.title}</h3>
-                        <p className="text-slate-600 text-sm">Posted {job.postedDate}</p>
-                      </div>
-                      <Badge
-                        variant={job.status === 'In Progress' ? 'default' : 'outline'}
-                      >
-                        {job.status}
-                      </Badge>
+            {/* Quick Actions */}
+            <div>
+              <Card padding="lg">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                <div className="space-y-3">
+                  <Button variant="primary" size="lg" className="w-full">
+                    <Briefcase size={18} />
+                    Post New Job
+                  </Button>
+                  <Button variant="secondary" size="lg" className="w-full">
+                    <Users size={18} />
+                    Browse Workers
+                  </Button>
+                  <Button variant="ghost" size="lg" className="w-full">
+                    <MessageSquare size={18} />
+                    View Messages
+                  </Button>
+                  <Button variant="accent" size="lg" className="w-full">
+                    <TrendingUp size={18} />
+                    View Analytics
+                  </Button>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="font-semibold text-gray-900 mb-3">Profile Stats</h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Profile Completion</span>
+                      <span className="font-semibold">92%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-gradient-to-r from-purple-600 to-cyan-500 h-2 rounded-full" style={{ width: '92%' }}></div>
                     </div>
 
-                    <div className="flex gap-6 text-sm">
-                      <div>
-                        <p className="text-slate-600">Budget</p>
-                        <p className="font-bold text-slate-900">{job.budget}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-600">Applications</p>
-                        <p className="font-bold text-slate-900">{job.applications}</p>
-                      </div>
+                    <div className="flex justify-between mt-4">
+                      <span className="text-gray-600">Profile Rating</span>
+                      <span className="font-semibold text-yellow-600">4.8/5.0</span>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card className="p-12 text-center">
-                <p className="text-slate-600 text-lg mb-4">No jobs posted yet.</p>
-                <Button onClick={() => navigate('/post-job')}>Post Your First Job</Button>
+                  </div>
+                </div>
               </Card>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'applications' && (
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Applications</h2>
-
-            {placeholderApplications.length > 0 ? (
-              <div className="space-y-4">
-                {placeholderApplications.map((app) => (
-                  <Card key={app.id} className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-bold text-slate-900">{app.jobTitle}</h3>
-                        <p className="text-slate-600 text-sm">From {app.applicant}</p>
-                      </div>
-                      <Badge
-                        variant={app.status === 'Accepted' ? 'default' : 'outline'}
-                      >
-                        {app.status}
-                      </Badge>
-                    </div>
-
-                    <div className="flex gap-6 text-sm mb-4">
-                      <div>
-                        <p className="text-slate-600">Proposed Rate</p>
-                        <p className="font-bold text-slate-900">{app.proposedRate}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-600">Applied</p>
-                        <p className="font-bold text-slate-900">{app.date}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        View Profile
-                      </Button>
-                      {app.status === 'Pending' && (
-                        <>
-                          <Button size="sm">Accept</Button>
-                          <Button size="sm" variant="outline">
-                            Decline
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card className="p-12 text-center">
-                <p className="text-slate-600 text-lg">No applications yet.</p>
-              </Card>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'products' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">My Products</h2>
-              <Button onClick={() => navigate('/creator-dashboard')} className="gap-2">
-                <Plus size={18} />
-                Create Product
-              </Button>
             </div>
-
-            <Card className="p-12 text-center">
-              <p className="text-slate-600 text-lg mb-4">
-                No products created yet.
-              </p>
-              <p className="text-slate-600 mb-6">
-                Upgrade to creator to start selling your skills and workflows.
-              </p>
-              <Button onClick={() => navigate('/creator-dashboard')}>
-                Become a Creator
-              </Button>
-            </Card>
           </div>
         )}
 
-        {activeTab === 'settings' && (
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Settings</h2>
-
-            <Card className="p-6 mb-6">
-              <h3 className="font-bold text-lg text-slate-900 mb-4">Profile Information</h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={user.email}
-                    disabled
-                    className="w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-slate-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Bio
-                  </label>
-                  <textarea
-                    placeholder="Tell us about yourself"
-                    rows={4}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button variant="outline">Cancel</Button>
-                <Button>Save Changes</Button>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="font-bold text-lg text-slate-900 mb-4">Account Preferences</h3>
-
-              <div className="space-y-4">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="w-4 h-4" />
+        {/* Active Jobs Tab */}
+        {selectedTab === 'jobs' && (
+          <Card padding="lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Active Jobs</h2>
+            <div className="space-y-4">
+              {[
+                { title: 'AI Content Generator - Full Stack', applications: 12, views: 248 },
+                { title: 'Machine Learning Engineer', applications: 8, views: 156 },
+                { title: 'Prompt Engineering Specialist', applications: 5, views: 89 }
+              ].map((job, idx) => (
+                <Card key={idx} padding="md" hover className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-slate-900">Email Notifications</p>
-                    <p className="text-sm text-slate-600">Receive updates about new applications</p>
+                    <h4 className="font-semibold text-gray-900">{job.title}</h4>
+                    <div className="flex gap-4 mt-2 text-sm text-gray-600">
+                      <span>{job.applications} applications</span>
+                      <span>{job.views} views</span>
+                    </div>
                   </div>
-                </label>
+                  <Button variant="ghost" size="md">
+                    Manage
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        )}
 
-                <label className="flex items-center gap-3 cursor-pointer pt-4 border-t border-slate-200">
-                  <input type="checkbox" defaultChecked className="w-4 h-4" />
-                  <div>
-                    <p className="font-semibold text-slate-900">Marketing Emails</p>
-                    <p className="text-sm text-slate-600">Receive tips and platform updates</p>
+        {/* Saved Workers Tab */}
+        {selectedTab === 'workers' && (
+          <Card padding="lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Saved Workers</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { name: 'Sarah Chen', role: 'AI/ML Engineer', rate: '$85/hr' },
+                { name: 'Marcus Johnson', role: 'Full Stack Developer', rate: '$95/hr' },
+                { name: 'Elena Rodriguez', role: 'Content Creator', rate: '$65/hr' }
+              ].map((worker, idx) => (
+                <Card key={idx} padding="md" hover>
+                  <div className="flex items-center gap-4 mb-4">
+                    <img
+                      src={`https://images.unsplash.com/photo-${1500000000000 + idx}?w=100&h=100&fit=crop`}
+                      alt={worker.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{worker.name}</h4>
+                      <p className="text-sm text-gray-600">{worker.role}</p>
+                    </div>
                   </div>
-                </label>
-              </div>
-
-              <div className="flex gap-3 pt-4 mt-6 border-t border-slate-200">
-                <Button variant="outline" className="flex-1">
-                  Cancel
-                </Button>
-                <Button className="flex-1">Save Preferences</Button>
-              </div>
-            </Card>
-          </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-purple-600 font-semibold">{worker.rate}</span>
+                    <Button variant="ghost" size="sm">
+                      Contact
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Card>
         )}
       </div>
     </div>
-   "¾
+  );
 }
