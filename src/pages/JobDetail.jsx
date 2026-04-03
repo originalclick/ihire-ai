@@ -1,161 +1,94 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, DollarSign, MapPin, ArrowLeft, User } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { Briefcase, MapPin, Clock, DollarSign, ArrowLeft, Send, Building, Calendar, Users, CheckCircle, Star } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { useAuth } from 'A/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
-// Placeholder data
-const PLACEHOLDER_JOB = {
-  id: 1,
-  title: 'Build AI Chatbot for Customer Support',
-  type: 'Full-time',
-  budget: { min: 5000, max: 8000 },
-  skills: ['Python', 'LLM', 'API Integration'],
-  postedDate: '2 days ago',
-  source: 'Direct Post',
-  description: 'Build a comprehensive AI chatbot for customer support',
-  fullDescription: `We are looking for an experienced AI developer to build a sophisticated chatbot for our customer support system. The chatbot should be able to handle common customer inquiries, escalate complex issues to human agents, and integrate seamlessly with our existing ticketing system.
-
-Requirements:
-- Experience building LLM-powered applications
-- Strong Python and API integration skills
-- Familiarity with chatbot frameworks (LangChain, LlamaIndex, etc.)
-- Understanding of NLP and conversation design
-- Experience with production deployments
-
-The ideal candidate will have:
-- Portfolio of previous chatbot projects
-- Experience with customer support systems
-- Knowledge of RAG (Retrieval Augmented Generation)
-- Ability to work independently and communicate progress`,
-  requirements: [
-    'Experience building LLM-powered applications',
-    'Strong Python and API integration skills',
-    'Familiarity with chatbot frameworks',
-    'Understanding of NLP and conversation design',
-    'Experience with production deployments',
-  ],
-  poster: {
-    name: 'Acme Corp',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=acme',
-    rating: 4.8,
-    reviewCount: 24,
-    jobsPosted: 12,
+const mockJobs = {
+  '1': {
+    id: 1, title: 'AI Content Generator', company: 'TechCorp', location: 'Remote',
+    salary: '$3,000 - $5,000', type: 'Contract', posted: '2 days ago', applications: 12,
+    category: 'Content Generation', experience: 'Intermediate',
+    description: 'We are looking for an AI specialist to build a content generation pipeline for our e-commerce platform. The ideal candidate will have experience with LLMs, prompt engineering, and content optimization. You will be responsible for creating automated content workflows that generate product descriptions, blog posts, and marketing copy.',
+    requirements: ['Experience with GPT-4 or Claude APIs', 'Strong prompt engineering skills', 'Python proficiency', 'Understanding of SEO principles', 'Portfolio of AI-generated content'],
+    benefits: ['Flexible schedule', 'Remote work', 'Performance bonuses', 'Long-term contract potential']
   },
-  applicants: 5,
-  deadline: '2026-04-10',
+  '2': {
+    id: 2, title: 'ML Model Training Specialist', company: 'DataFlow Inc', location: 'Remote',
+    salary: '$5,000 - $8,000', type: 'Project', posted: '1 week ago', applications: 8,
+    category: 'Machine Learning', experience: 'Expert',
+    description: 'DataFlow is seeking an ML engineer to fine-tune our recommendation models. This is a project-based role requiring deep expertise in transformer architectures, training pipelines, and model evaluation.',
+    requirements: ['5+ years ML experience', 'PyTorch or TensorFlow expertise', 'Experience with fine-tuning LLMs', 'Strong math and statistics background', 'Published research preferred'],
+    benefits: ['Competitive project rate', 'Access to GPU clusters', 'Research collaboration', 'Reference letter']
+  },
+  '3': {
+    id: 3, title: 'Chatbot Developer', company: 'BotWorks', location: 'Hybrid - NYC',
+    salary: '$4,000 - $6,000', type: 'Contract', posted: '3 days ago', applications: 15,
+    category: 'Chatbot Development', experience: 'Intermediate',
+    description: 'Build and deploy a customer service chatbot for our retail client. The bot should handle FAQs, order tracking, returns, and escalation to human agents.',
+    requirements: ['Chatbot framework experience', 'NLP understanding', 'API integration skills', 'JavaScript/TypeScript', 'Prior customer service bot experience'],
+    benefits: ['Weekly payments', 'Flexible hours', 'Portfolio project', 'Potential for ongoing work']
+  }
 };
 
 export default function JobDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const [job] = useState(PLACEHOLDER_JOB);
-  const [showApplyModal, setShowApplyModal] = useState(false);
-  const [proposedRate, setProposedRate] = useState('');
-  const [message, setMessage] = useState('');
+  const [applied, setApplied] = useState(false);
 
-  const handleApply = (e) => {
-    e.preventDefault();
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    // Handle apply logic here
-    console.log('Applied with rate:', proposedRate, 'Message:', message);
-    setShowApplyModal(false);
-  };
+  const job = mockJobs[id] || mockJobs['1'];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 py-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4"
-          >
-            <ArrowLeft size={18} />
-            Back to Jobs
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+      <div className="max-w-5xl mx-auto">
+        <Link to="/jobs" className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6">
+          <ArrowLeft size={18} />
+          Back to Jobs
+        </Link>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Card className="p-8 mb-6">
+            <Card padding="lg">
               <div className="mb-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h1 className="text-4xl font-bold text-slate-900 mb-2">{job.title}</h1>
-                    <p className="text-slate-600">{job.source}</p>
-                  </div>
-                  <Badge>{job.type}</Badge>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="info" size="sm">{job.category}</Badge>
+                  <Badge variant="default" size="sm">{job.type}</Badge>
+                </div>
+                <h1 className="text-3xl font-bold text-gray-900">{job.title}</h1>
+                <div className="flex flex-wrap items-center gap-4 mt-3 text-gray-600">
+                  <span className="flex items-center gap-1"><Building size={16} /> {job.company}</span>
+                  <span className="flex items-center gap-1"><MapPin size={16} /> {job.location}</span>
+                  <span className="flex items-center gap-1"><DollarSign size={16} /> {job.salary}</span>
+                  <span className="flex items-center gap-1"><Clock size={16} /> {job.posted}</span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-6 mb-8 pb-8 border-b border-slate-200">
-                <div className="flex items-center gap-2">
-                  <DollarSign size={20} className="text-slate-500" />
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Budget</p>
-                    <p className="font-bold text-lg">
-                      ${job.budget.min.toLocaleString()} - ${job.budget.max.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock size={20} className="text-slate-500" />
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Deadline</p>
-                    <p className="font-bold text-lg">{job.deadline}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <User size={20} className="text-slate-500" />
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Applicants</p>
-                    <p className="font-bold text-lg">{job.applicants}</p>
-                  </div>
-                </div>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-3">Description</h2>
+                <p className="text-gray-700 leading-relaxed">{job.description}</p>
               </div>
 
-              {/* Job Description */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">About This Job</h2>
-                <div className="prose prose-sm max-w-none text-slate-700">
-                  {job.fullDescription.split('\n\n').map((para, i) => (
-                    <p key={i} className="mb-4 whitespace-pre-wrap">
-                      {para}
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              {/* Skills Required */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-4">Required Skills</h3>
-                <div className="flex gap-2 flex-wrap">
-                  {job.skills.map((skill) => (
-                    <Badge key={skill} variant="outline">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {/* Requirements List */}
-              <div>
-                <h3 className="text-xl font-bold text-slate-900 mb-4">Requirements</h3>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-3">Requirements</h2>
                 <ul className="space-y-2">
                   {job.requirements.map((req, i) => (
-                    <li key={i} className="flex gap-3 text-slate-700">
-                      <span className="text-blue-600 font-bold">•</span>
-                      {req}
+                    <li key={i} className="flex items-start gap-2">
+                      <CheckCircle size={18} className="text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700">{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">Benefits</h2>
+                <ul className="space-y-2">
+                  {job.benefits.map((benefit, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <Star size={18} className="text-yellow-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700">{benefit}</span>
                     </li>
                   ))}
                 </ul>
@@ -163,114 +96,42 @@ export default function JobDetail() {
             </Card>
           </div>
 
-          {/* Sidebar */}
           <div>
-            {/* Apply Card */}
-            <Card className="p-6 mb-6 sticky top-8">
-              {!user ? (
-                <Button onClick={() => navigate('/auth')} className="w-full mb-4">
-                  Sign In to Apply
-                </Button>
+            <Card padding="lg">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Apply Now</h2>
+              {applied ? (
+                <div className="text-center py-4">
+                  <CheckCircle size={48} className="mx-auto text-green-500 mb-3" />
+                  <p className="font-semibold text-gray-900">Application Submitted!</p>
+                  <p className="text-sm text-gray-600 mt-1">The employer will review your profile.</p>
+                </div>
               ) : (
-                <Button onClick={() => setShowApplyModal(true)} className="w-full mb-4">
-                  Apply Now
-                </Button>
-              )}
-              <p className="text-xs text-slate-600 text-center">
-                Sign in or create an account to apply
-              </p>
-            </Card>
-
-            {/* Poster Info */}
-            <Card className="p-6">
-              <h3 className="font-bold text-lg text-slate-900 mb-4">About the Poster</h3>
-
-              <div className="flex items-center gap-3 mb-4">
-                <img
-                  src={job.poster.avatar}
-                  alt={job.poster.name}
-                  className="w-12 h-12 rounded-full"
-                />
                 <div>
-                  <p className="font-bold text-slate-900">{job.poster.name}</p>
-                  <div className="flex items-center gap-1 text-sm text-slate-600">
-                    <span>★</span>
-                    <span>
-                      {job.poster.rating} ({job.poster.reviewCount} reviews)
-                    </span>
-                  </div>
+                  <p className="text-gray-600 text-sm mb-4">Submit your application to be considered for this role. The employer will review your profile and portfolio.</p>
+                  <Button variant="primary" size="lg" className="w-full" onClick={() => setApplied(true)}>
+                    <Send size={18} />
+                    Apply for this Job
+                  </Button>
+                </div>
+              )}
+              <div className="mt-6 pt-6 border-t border-gray-200 space-y-3 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Applications</span>
+                  <span className="font-semibold">{job.applications}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Experience</span>
+                  <span className="font-semibold">{job.experience}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Posted</span>
+                  <span className="font-semibold">{job.posted}</span>
                 </div>
               </div>
-
-              <div className="space-y-2 pb-4 border-b border-slate-200 mb-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Jobs Posted</span>
-                  <span className="font-bold text-slate-900">{job.poster.jobsPosted}</span>
-                </div>
-              </div>
-
-              <Button variant="outline" className="w-full">
-                View Profile
-              </Button>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Apply Modal */}
-      {showApplyModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md p-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Apply for Job</h2>
-
-            <form onSubmit={handleApply} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Proposed Rate (per hour/project)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-3 text-slate-600">$</span>
-                  <input
-                    type="number"
-                    value={proposedRate}
-                    onChange={(e) => setProposedRate(e.target.value)}
-                    placeholder="Enter your proposed rate"
-                    required
-                    className="w-full pl-7 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Cover Message
-                </label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tell the poster why you're a great fit..."
-                  rows={4}
-                  required
-                  className="v-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={() => setShowApplyModal(false)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="flex-1">
-                  Submit Application
-                </Button>
-              </div>
-            </form>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }
