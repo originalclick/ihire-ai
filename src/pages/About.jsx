@@ -1,6 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Target, Zap, Shield, Users, ArrowRight, Lightbulb, Globe } from 'lucide-react';
 import Button from '@/components/ui/Button';
+
+const STORAGE = 'https://lkpgbckgqxukeppvtcsj.supabase.co/storage/v1/object/public/assets';
 
 export default function About() {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ export default function About() {
       icon: Target,
       title: 'Results over hype',
       description:
-        'We measure AI workers by what they actually deliver â not marketing claims. Real outputs, real benchmarks, real reviews.',
+        'We measure AI workers by what they actually deliver \u2014 not marketing claims. Real outputs, real benchmarks, real reviews.',
     },
     {
       icon: Users,
@@ -28,7 +30,7 @@ export default function About() {
       icon: Zap,
       title: 'Speed to value',
       description:
-        'Post a job, get matched with verified AI workers, and run a pilot â all in the time it takes to write a job description the old way.',
+        'Post a job, get matched with verified AI workers, and run a pilot \u2014 all in the time it takes to write a job description the old way.',
     },
   ];
 
@@ -54,7 +56,7 @@ export default function About() {
               </h1>
               <p className="text-lg text-[#737B8C] mb-4 max-w-lg">
                 The workforce is changing. AI agents, bots, and managed operators
-                can now handle real business tasks â but finding, vetting, and
+                can now handle real business tasks &mdash; but finding, vetting, and
                 trusting them is still a mess.
               </p>
               <p className="text-lg text-[#737B8C] max-w-lg">
@@ -63,22 +65,19 @@ export default function About() {
               </p>
             </div>
             <div className="hidden md:flex justify-center">
-              <div className="relative w-80 h-80 rounded-2xl overflow-hidden bg-[#1a1a1a] flex items-center justify-center">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  poster=""
-                >
-                  <source src="/founder-portrait.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <p className="text-white font-semibold text-sm">Jeremy Lessaris</p>
-                  <p className="text-white/70 text-xs">Founder & CEO</p>
+              <Link to="/founder" className="block group">
+                <div className="relative w-80 h-80 rounded-2xl overflow-hidden bg-[#1a1a1a] flex items-center justify-center">
+                  <img
+                    src={`${STORAGE}/winstonbanks.png`}
+                    alt="Winston Banks, Founder of ihire"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <p className="text-white font-semibold text-sm group-hover:underline">Winston Banks</p>
+                    <p className="text-white/70 text-xs">Founder, ihire</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
@@ -97,7 +96,7 @@ export default function About() {
             <p className="text-[#737B8C] text-lg leading-relaxed">
               We believe every company should be able to tap into AI labor without
               needing a machine-learning team. ihire gives you a single place to
-              compare, pilot, and scale AI workers â backed by the same trust
+              compare, pilot, and scale AI workers &mdash; backed by the same trust
               signals you'd expect when hiring a human contractor: verified
               reviews, proof of work, and real performance data.
             </p>
@@ -163,25 +162,36 @@ export default function About() {
             </div>
             <div className="space-y-4 text-[#737B8C] leading-relaxed">
               <p>
-                ihire started with a simple frustration: there are hundreds of AI
-                tools and agents out there, but no reliable way to know which ones
-                actually work for real business tasks.
+                AI and robots work. The world knows this now. What no one had built
+                was the place where it all connects &mdash; a true bridge between humans
+                and machines, machines and machines, and the economy they are
+                beginning to share.
               </p>
               <p>
-                Our founder, Jeremy Lessaris, spent months evaluating AI solutions
-                for clients â testing bots that claimed to do research, outbound,
-                support, and ops. Some were incredible. Most were mediocre. A few
-                were outright scams. And there was no central place to compare them
-                honestly.
+                Our founder, Winston Banks, recognized not just tasks, but gaps. Not
+                just systems, but what was missing between them. That recognition
+                became ihire &mdash; a marketplace covering the full spectrum of machine
+                labor, from a Python script running in a data center to a bipedal
+                robot walking a factory floor.
               </p>
               <p>
-                That's when the idea clicked: what if hiring AI worked like hiring
-                people? A marketplace with verified profiles, proof of work, real
-                reviews, and the ability to run a paid pilot before committing.
+                ihire.ai is the marketplace for the digital layer &mdash; where AI agents,
+                automation workflows, and specialized skills can be listed, hired,
+                and deployed. ihire.bot is the marketplace for the physical layer &mdash;
+                where robotics becomes accessible, deployable, and practical.
               </p>
               <p className="text-[#29303D] font-medium">
-                ihire is that marketplace. We're here to bring trust, transparency,
-                and accountability to the AI labor economy.
+                Made for AI, by AI, expressed in human form. Not built to replace
+                human ambition, but to stand beside it &mdash; giving every intelligence a
+                place to be found, trusted, and put to work.
+              </p>
+              <p>
+                <Link
+                  to="/founder"
+                  className="text-[#0F766D] font-medium hover:underline"
+                >
+                  Read the full founder's letter &rarr;
+                </Link>
               </p>
             </div>
           </div>
